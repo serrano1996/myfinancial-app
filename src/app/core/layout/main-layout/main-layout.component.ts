@@ -13,7 +13,13 @@ import { TranslateModule } from '@ngx-translate/core';
 })
 export class MainLayoutComponent {
 
+  isCollapsed = false;
+
   constructor(private authService: AuthService, private router: Router) { }
+
+  toggleSidebar() {
+    this.isCollapsed = !this.isCollapsed;
+  }
 
   async logout() {
     await this.authService.signOut();

@@ -1,6 +1,6 @@
 <div class="layout-container">
     <!-- Sidebar -->
-    <aside class="sidebar">
+    <aside class="sidebar" [class.collapsed]="isCollapsed">
         <div class="sidebar-header">
             <div class="logo">
                 <div class="logo-icon-wrapper">
@@ -40,37 +40,44 @@
                         </g>
                     </svg>
                 </div>
-                <span class="logo-text">MyFinance</span>
+                <span class="logo-text" *ngIf="!isCollapsed">MyFinance</span>
             </div>
+
+            <!-- Toggle Button -->
+            <button class="toggle-btn" (click)="toggleSidebar()" [class.rotated]="isCollapsed">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+            </button>
         </div>
 
         <nav class="sidebar-nav">
             <a routerLink="/dashboard" routerLinkActive="active" class="nav-item">
-                <span class="nav-icon">📊</span>
-                <span>{{ 'LAYOUT.SIDEBAR.DASHBOARD' | translate }}</span>
-            </a>
-            <a routerLink="/accounts" routerLinkActive="active" class="nav-item">
-                <span class="nav-icon">🏦</span>
-                <span>{{ 'LAYOUT.SIDEBAR.ACCOUNTS' | translate }}</span>
-            </a>
-            <a routerLink="/categories" routerLinkActive="active" class="nav-item">
-                <span class="nav-icon">🏷️</span>
-                <span>{{ 'LAYOUT.SIDEBAR.CATEGORIES' | translate }}</span>
+                <span class="nav-icon" title="{{ 'LAYOUT.SIDEBAR.DASHBOARD' | translate }}">📊</span>
+                <span *ngIf="!isCollapsed" class="nav-text">{{ 'LAYOUT.SIDEBAR.DASHBOARD' | translate }}</span>
             </a>
             <a routerLink="/transactions" routerLinkActive="active" class="nav-item">
-                <span class="nav-icon">💳</span>
-                <span>{{ 'LAYOUT.SIDEBAR.TRANSACTIONS' | translate }}</span>
+                <span class="nav-icon" title="{{ 'LAYOUT.SIDEBAR.TRANSACTIONS' | translate }}">💳</span>
+                <span *ngIf="!isCollapsed" class="nav-text">{{ 'LAYOUT.SIDEBAR.TRANSACTIONS' | translate }}</span>
             </a>
             <a routerLink="/profile" routerLinkActive="active" class="nav-item">
-                <span class="nav-icon">👤</span>
-                <span>{{ 'LAYOUT.SIDEBAR.PROFILE' | translate }}</span>
+                <span class="nav-icon" title="{{ 'LAYOUT.SIDEBAR.PROFILE' | translate }}">👤</span>
+                <span *ngIf="!isCollapsed" class="nav-text">{{ 'LAYOUT.SIDEBAR.PROFILE' | translate }}</span>
             </a>
         </nav>
 
         <div class="sidebar-footer">
             <button (click)="logout()" class="nav-item logout-btn">
-                <span class="nav-icon">🚪</span>
-                <span>{{ 'LAYOUT.SIDEBAR.LOGOUT' | translate }}</span>
+                <span class="nav-icon" title="{{ 'LAYOUT.SIDEBAR.LOGOUT' | translate }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="logout-icon-svg">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                </span>
+                <span *ngIf="!isCollapsed" class="nav-text">{{ 'LAYOUT.SIDEBAR.LOGOUT' | translate }}</span>
             </button>
         </div>
     </aside>
