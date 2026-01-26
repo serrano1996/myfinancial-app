@@ -35,10 +35,13 @@ export class AuthService {
     this._user.next(data.session?.user ?? null);
   }
 
-  async signUp(email: string, password: string) {
+  async signUp(email: string, password: string, data?: { full_name: string }) {
     return this.supabaseService.supabase.auth.signUp({
       email,
       password,
+      options: {
+        data
+      }
     });
   }
 

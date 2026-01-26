@@ -17,6 +17,8 @@
         "REGISTER": {
             "TITLE": "Crear Cuenta",
             "SUBTITLE": "Comienza a administrar tus finanzas hoy",
+            "NAME_LABEL": "Nombre completo",
+            "NAME_PLACEHOLDER": "Ingresa tu nombre",
             "EMAIL_LABEL": "Correo electrónico",
             "EMAIL_PLACEHOLDER": "Ingresa tu correo",
             "PASSWORD_LABEL": "Contraseña",

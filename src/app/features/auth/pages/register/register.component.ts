@@ -26,6 +26,7 @@ export class RegisterComponent {
     private router: Router
   ) {
     this.registerForm = this.fb.group({
+      name: ['', [Validators.required, Validators.minLength(2)]],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['', [Validators.required]]
@@ -44,10 +45,10 @@ export class RegisterComponent {
     this.loading = true;
     this.errorMessage = null;
 
-    const { email, password } = this.registerForm.value;
+    const { name, email, password } = this.registerForm.value;
 
     try {
-      const { error } = await this.authService.signUp(email, password);
+      const { error } = await this.authService.signUp(email, password, { full_name: name });
       if (error) throw error;
 
       // Show success modal

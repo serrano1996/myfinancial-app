@@ -17,6 +17,8 @@
         "REGISTER": {
             "TITLE": "Create Account",
             "SUBTITLE": "Start managing your finances today",
+            "NAME_LABEL": "Full Name",
+            "NAME_PLACEHOLDER": "Enter your name",
             "EMAIL_LABEL": "Email address",
             "EMAIL_PLACEHOLDER": "Enter your email",
             "PASSWORD_LABEL": "Password",
