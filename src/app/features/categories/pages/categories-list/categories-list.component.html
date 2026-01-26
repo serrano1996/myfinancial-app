@@ -1,0 +1,67 @@
+<div class="page-container">
+    <header class="page-header flex justify-between items-center">
+        <div>
+            <h1>{{ 'CATEGORIES.TITLE' | translate }}</h1>
+            <p class="subtitle">{{ 'CATEGORIES.SUBTITLE' | translate }}</p>
+        </div>
+        <button class="btn btn-primary" (click)="openCreateModal()">
+            <span>+ {{ 'CATEGORIES.ADD_BUTTON' | translate }}</span>
+        </button>
+    </header>
+
+    <!-- Loading State -->
+    <div *ngIf="loading" class="loading-state">
+        <div class="spinner"></div>
+    </div>
+
+    <div *ngIf="!loading" class="categories-content">
+
+        <ng-container *ngFor="let type of ['income', 'expense', 'transfer']">
+            <section class="category-section" *ngIf="groupedCategories[type] && groupedCategories[type].length > 0">
+                <h2 class="section-title">{{ ('CATEGORIES.MODAL.TYPES.' + (type | uppercase)) | translate }}</h2>
+
+                <div class="category-tree">
+                    <!-- Recursive Template -->
+                    <ng-template #nodeTemplate let-nodes="nodes">
+                        <div *ngFor="let node of nodes" class="category-node-wrapper">
+                            <div class="category-node card" (click)="openEditModal(node, $event)">
+                                <div class="node-content">
+                                    <div class="category-icon" [style.background-color]="node.color + '20'"
+                                        [style.color]="node.color">
+                                        {{ node.icon || '🏷️' }}
+                                    </div>
+                                    <span class="category-name">{{ node.name }}</span>
+                                </div>
+
+                                <div class="node-actions">
+                                    <button class="btn-icon delete-btn" (click)="deleteCategory(node.id, $event)">
+                                        🗑️
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Children -->
+                            <div *ngIf="node.children && node.children.length > 0" class="node-children">
+                                <ng-container
+                                    *ngTemplateOutlet="nodeTemplate; context:{nodes: node.children}"></ng-container>
+                            </div>
+                        </div>
+                    </ng-template>
+
+                    <ng-container
+                        *ngTemplateOutlet="nodeTemplate; context:{nodes: groupedCategories[type]}"></ng-container>
+                </div>
+            </section>
+
+            <!-- Empty State Per Section if needed, but overall empty state below -->
+        </ng-container>
+
+        <!-- Overall Empty State -->
+        <div *ngIf="categories.length === 0" class="empty-state">
+            <p>{{ 'CATEGORIES.EMPTY' | translate }}</p>
+        </div>
+    </div>
+
+    <app-category-form-modal [visible]="showModal" [category]="editingCategory" [categories]="categories"
+        [loading]="modalLoading" (save)="handleSave($event)" (cancel)="closeModal()"></app-category-form-modal>
+</div>

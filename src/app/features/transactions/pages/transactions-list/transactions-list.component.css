@@ -1,0 +1,148 @@
+.page-container {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.page-header {
+    margin-bottom: 2rem;
+}
+
+.header-actions {
+    display: flex;
+    gap: 1rem;
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.filters-bar {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.filter-group select,
+.filter-group input {
+    margin: 0;
+    width: auto;
+    min-width: 150px;
+}
+
+.transactions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.tx-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    transition: background 0.2s;
+    cursor: pointer;
+}
+
+.tx-card:hover {
+    background: rgba(30, 41, 59, 0.9);
+}
+
+.tx-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.tx-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+}
+
+.tx-info h3 {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.tx-meta {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.tx-desc {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-style: italic;
+    margin-top: 0.25rem;
+}
+
+.tx-right {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.amount {
+    font-weight: 700;
+    font-size: 1.125rem;
+}
+
+.amount.income {
+    color: var(--success);
+}
+
+.amount.expense {
+    color: var(--text-main);
+    /* Or darker text, or red */
+    /* Usually expenses are just standard color in dark mode, or red if emphasized. 
+       Let's stick to standard or subtle red. */
+}
+
+.delete-btn {
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.tx-card:hover .delete-btn {
+    opacity: 1;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 4rem;
+    color: var(--text-muted);
+}
+
+.loading-state {
+    display: flex;
+    justify-content: center;
+    padding: 4rem;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(255, 255, 255, 0.1);
+    border-left-color: var(--primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}

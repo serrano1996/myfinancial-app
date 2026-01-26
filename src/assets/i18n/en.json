@@ -1,0 +1,151 @@
+{
+    "AUTH": {
+        "LOGIN": {
+            "TITLE": "Welcome Back",
+            "SUBTITLE": "Enter your credentials to access your account",
+            "EMAIL_LABEL": "Email address",
+            "EMAIL_PLACEHOLDER": "Enter your email",
+            "PASSWORD_LABEL": "Password",
+            "PASSWORD_PLACEHOLDER": "Enter your password",
+            "SUBMIT": "Sign In",
+            "LOADING": "Signing In...",
+            "NO_ACCOUNT": "Don't have an account?",
+            "SIGN_UP": "Sign up",
+            "ERROR_REQUIRED": "Valid email is required",
+            "ERROR_PASSWORD": "Password is required"
+        },
+        "REGISTER": {
+            "TITLE": "Create Account",
+            "SUBTITLE": "Start managing your finances today",
+            "EMAIL_LABEL": "Email address",
+            "EMAIL_PLACEHOLDER": "Enter your email",
+            "PASSWORD_LABEL": "Password",
+            "PASSWORD_PLACEHOLDER": "Create a password",
+            "CONFIRM_PASSWORD_LABEL": "Confirm Password",
+            "CONFIRM_PASSWORD_PLACEHOLDER": "Confirm your password",
+            "SUBMIT": "Sign Up",
+            "LOADING": "Creating Account...",
+            "HAVE_ACCOUNT": "Already have an account?",
+            "SIGN_IN": "Sign in",
+            "ERROR_REQUIRED": "Valid email is required",
+            "ERROR_PASSWORD_LENGTH": "Password must be at least 6 characters",
+            "ERROR_MATCH": "Passwords do not match",
+            "SUCCESS": "Registration successful! Please check your email for confirmation link.",
+            "MODAL_SUCCESS": {
+                "TITLE": "Account Created!",
+                "MESSAGE": "We've sent a confirmation email. Please check your inbox and validate your account to continue.",
+                "BUTTON": "Got it, go to Login"
+            }
+        }
+    },
+    "LAYOUT": {
+        "SIDEBAR": {
+            "DASHBOARD": "Dashboard",
+            "ACCOUNTS": "Accounts",
+            "CATEGORIES": "Categories",
+            "TRANSACTIONS": "Transactions",
+            "PROFILE": "Profile",
+            "LOGOUT": "Logout"
+        }
+    },
+    "DASHBOARD": {
+        "TITLE": "Dashboard",
+        "SUBTITLE": "Overview of your financial health",
+        "BALANCE": "Total Balance",
+        "INCOME": "Income",
+        "EXPENSES": "Expenses",
+        "CHARTS": {
+            "EXPENSE_BY_CATEGORY": "Expenses by Category",
+            "INCOME_VS_EXPENSE": "Income vs Expense"
+        }
+    },
+    "ACCOUNTS": {
+        "TITLE": "Accounts",
+        "SUBTITLE": "Manage your bank accounts and wallets",
+        "ADD_BUTTON": "Add Account",
+        "EMPTY": "No accounts found. Create one to get started!",
+        "DELETE_CONFIRM": "Are you sure you want to delete this account?",
+        "MODAL": {
+            "EDIT_TITLE": "Edit Account",
+            "NEW_TITLE": "New Account",
+            "NAME_LABEL": "Name",
+            "NAME_PLACEHOLDER": "E.g. Main Wallet",
+            "TYPE_LABEL": "Type",
+            "BALANCE_LABEL": "Current Balance",
+            "COLOR_LABEL": "Color",
+            "ICON_LABEL": "Icon",
+            "TYPES": {
+                "CASH": "Cash",
+                "BANK": "Bank",
+                "CREDIT": "Credit Card",
+                "INVESTMENT": "Investment",
+                "OTHER": "Other"
+            }
+        }
+    },
+    "CATEGORIES": {
+        "TITLE": "Categories",
+        "SUBTITLE": "Organize your finances",
+        "ADD_BUTTON": "Add Category",
+        "EMPTY": "No categories found. Create one to get started!",
+        "DELETE_CONFIRM": "Are you sure you want to delete this category? Subcategories will be unaffected but orphaned.",
+        "INCOME": "Income",
+        "EXPENSE": "Expense",
+        "TRANSFER": "Transfer",
+        "MODAL": {
+            "EDIT_TITLE": "Edit Category",
+            "NEW_TITLE": "New Category",
+            "NAME_LABEL": "Name",
+            "NAME_PLACEHOLDER": "E.g. Groceries",
+            "TYPE_LABEL": "Type",
+            "PARENT_LABEL": "Parent Category (Optional)",
+            "NO_PARENT": "No Parent",
+            "COLOR_LABEL": "Color",
+            "ICON_LABEL": "Icon",
+            "TYPES": {
+                "INCOME": "Income",
+                "EXPENSE": "Expense",
+                "TRANSFER": "Transfer"
+            }
+        }
+    },
+    "TRANSACTIONS": {
+        "TITLE": "Transactions",
+        "SUBTITLE": "Track income and expenses",
+        "ADD_BUTTON": "Add Transaction",
+        "IMPORT_BUTTON": "Import CSV",
+        "FILTER_ACCOUNTS": "All Accounts",
+        "FILTER_CATEGORIES": "All Categories",
+        "EMPTY": "No transactions found.",
+        "DELETE_CONFIRM": "Delete transaction?",
+        "MODAL": {
+            "EDIT_TITLE": "Edit Transaction",
+            "NEW_TITLE": "New Transaction",
+            "ACCOUNT_LABEL": "Account",
+            "CATEGORY_LABEL": "Category",
+            "SELECT_ACCOUNT": "Select Account",
+            "SELECT_CATEGORY": "Select Category",
+            "AMOUNT_LABEL": "Amount",
+            "DATE_LABEL": "Date",
+            "DESCRIPTION_LABEL": "Description (Optional)",
+            "DESCRIPTION_PLACEHOLDER": "Notes..."
+        },
+        "IMPORT_MODAL": {
+            "TITLE": "Import CSV",
+            "INSTRUCTION": "Upload a CSV file to import transactions.",
+            "UPLOAD_BUTTON": "Upload",
+            "ALERT_NO_VALID": "No valid transactions found to import. Check CSV headers: Date, Amount, Description, Category, Account"
+        }
+    },
+    "COMMON": {
+        "LOADING": "Loading...",
+        "SAVE": "Save",
+        "SAVING": "Saving...",
+        "CANCEL": "Cancel",
+        "DELETE": "Delete",
+        "EDIT": "Edit",
+        "ADD": "Add",
+        "CONFIRM_DELETE": "Are you sure you want to delete this item?",
+        "EMPTY_STATE": "No items found."
+    }
+}

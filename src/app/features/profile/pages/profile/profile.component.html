@@ -1,0 +1,69 @@
+<div class="profile-container">
+    <header class="page-header">
+        <h1>{{ 'LAYOUT.SIDEBAR.PROFILE' | translate }}</h1>
+        <p class="subtitle">Manage your account settings</p>
+    </header>
+
+    <div class="profile-grid">
+        <!-- User Info Card -->
+        <div class="card profile-card">
+            <div class="user-info">
+                <div class="avatar-placeholder">
+                    {{ user?.email?.charAt(0)?.toUpperCase() }}
+                </div>
+                <div class="user-details">
+                    <h3>{{ user?.email }}</h3>
+                    <p class="role">User</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Form -->
+        <div class="card settings-card">
+            <h2>App Settings</h2>
+
+            <form [formGroup]="profileForm" (ngSubmit)="updateProfile()">
+                <div *ngIf="successMessage" class="alert success-alert">
+                    {{ successMessage }}
+                </div>
+                <div *ngIf="errorMessage" class="alert error-alert">
+                    {{ errorMessage }}
+                </div>
+
+                <div class="form-group">
+                    <label>Currency</label>
+                    <select formControlName="currency">
+                        <option *ngFor="let curr of currencies" [value]="curr.code">
+                            {{ curr.label }}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Language</label>
+                    <select formControlName="language">
+                        <option *ngFor="let lang of languages" [value]="lang.code">
+                            {{ lang.label }}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Theme</label>
+                    <select formControlName="theme">
+                        <option *ngFor="let theme of themes" [value]="theme.code">
+                            {{ theme.label }}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary" [disabled]="loading">
+                        <span *ngIf="!loading">{{ 'COMMON.SAVE' | translate }}</span>
+                        <span *ngIf="loading">{{ 'COMMON.SAVING' | translate }}</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

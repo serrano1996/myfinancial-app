@@ -1,0 +1,51 @@
+<div class="page-container">
+    <header class="page-header flex justify-between items-center">
+        <div>
+            <h1>{{ 'ACCOUNTS.TITLE' | translate }}</h1>
+            <p class="subtitle">{{ 'ACCOUNTS.SUBTITLE' | translate }}</p>
+        </div>
+        <button class="btn btn-primary" (click)="openCreateModal()">
+            <span>+ {{ 'ACCOUNTS.ADD_BUTTON' | translate }}</span>
+        </button>
+    </header>
+
+    <!-- Loading State -->
+    <div *ngIf="loading" class="loading-state">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Accounts Grid -->
+    <div *ngIf="!loading" class="accounts-grid">
+        <div *ngFor="let account of accounts" class="card account-card" (click)="openEditModal(account)"
+            [style.border-left-color]="account.color || 'var(--primary)'">
+            <div class="card-content">
+                <div class="account-icon" [style.background-color]="account.color + '20'" [style.color]="account.color">
+                    {{ account.icon || '💰' }}
+                </div>
+                <div class="account-details">
+                    <h3>{{ account.name }}</h3>
+                    <!-- We can translate account types if they are standard keys, otherwise use raw or a pipe map -->
+                    <!-- Assuming keys like 'cash', 'bank' match keys in translation file structure if uppercase -->
+                    <p class="account-type">{{ ('ACCOUNTS.MODAL.TYPES.' + (account.type | uppercase)) | translate }}</p>
+                </div>
+                <div class="account-balance">
+                    <p class="amount">{{ account.balance | currency:'EUR' }}</p>
+                </div>
+            </div>
+
+            <div class="card-actions">
+                <button class="btn-icon delete-btn" (click)="deleteAccount(account.id, $event)">
+                    🗑️
+                </button>
+            </div>
+        </div>
+
+        <!-- Empty State -->
+        <div *ngIf="accounts.length === 0" class="empty-state">
+            <p>{{ 'ACCOUNTS.EMPTY' | translate }}</p>
+        </div>
+    </div>
+
+    <app-account-form-modal [visible]="showModal" [account]="editingAccount" [loading]="modalLoading"
+        (save)="handleSave($event)" (cancel)="closeModal()"></app-account-form-modal>
+</div>

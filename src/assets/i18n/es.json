@@ -1,0 +1,151 @@
+{
+    "AUTH": {
+        "LOGIN": {
+            "TITLE": "Bienvenido",
+            "SUBTITLE": "Ingresa tus credenciales para acceder",
+            "EMAIL_LABEL": "Correo electrónico",
+            "EMAIL_PLACEHOLDER": "Ingresa tu correo",
+            "PASSWORD_LABEL": "Contraseña",
+            "PASSWORD_PLACEHOLDER": "Ingresa tu contraseña",
+            "SUBMIT": "Iniciar Sesión",
+            "LOADING": "Iniciando...",
+            "NO_ACCOUNT": "¿No tienes cuenta?",
+            "SIGN_UP": "Regístrate",
+            "ERROR_REQUIRED": "Correo válido requerido",
+            "ERROR_PASSWORD": "La contraseña es requerida"
+        },
+        "REGISTER": {
+            "TITLE": "Crear Cuenta",
+            "SUBTITLE": "Comienza a administrar tus finanzas hoy",
+            "EMAIL_LABEL": "Correo electrónico",
+            "EMAIL_PLACEHOLDER": "Ingresa tu correo",
+            "PASSWORD_LABEL": "Contraseña",
+            "PASSWORD_PLACEHOLDER": "Crea una contraseña",
+            "CONFIRM_PASSWORD_LABEL": "Confirmar Contraseña",
+            "CONFIRM_PASSWORD_PLACEHOLDER": "Confirma tu contraseña",
+            "SUBMIT": "Registrarse",
+            "LOADING": "Creando cuenta...",
+            "HAVE_ACCOUNT": "¿Ya tienes cuenta?",
+            "SIGN_IN": "Inicia sesión",
+            "ERROR_REQUIRED": "Correo válido requerido",
+            "ERROR_PASSWORD_LENGTH": "Mínimo 6 caracteres",
+            "ERROR_MATCH": "Las contraseñas no coinciden",
+            "SUCCESS": "¡Registro exitoso! Revisa tu correo para confirmar.",
+            "MODAL_SUCCESS": {
+                "TITLE": "¡Cuenta Creada!",
+                "MESSAGE": "Hemos enviado un correo de confirmación. Por favor, revisa tu bandeja de entrada y valida tu cuenta para continuar.",
+                "BUTTON": "Entendido, ir al Login"
+            }
+        }
+    },
+    "LAYOUT": {
+        "SIDEBAR": {
+            "DASHBOARD": "Panel Principal",
+            "ACCOUNTS": "Cuentas",
+            "CATEGORIES": "Categorías",
+            "TRANSACTIONS": "Transacciones",
+            "PROFILE": "Perfil",
+            "LOGOUT": "Cerrar Sesión"
+        }
+    },
+    "DASHBOARD": {
+        "TITLE": "Panel Principal",
+        "SUBTITLE": "Resumen de tu salud financiera",
+        "BALANCE": "Balance Total",
+        "INCOME": "Ingresos",
+        "EXPENSES": "Gastos",
+        "CHARTS": {
+            "EXPENSE_BY_CATEGORY": "Gastos por Categoría",
+            "INCOME_VS_EXPENSE": "Ingresos vs Gastos"
+        }
+    },
+    "ACCOUNTS": {
+        "TITLE": "Cuentas",
+        "SUBTITLE": "Administra tus cuentas bancarias y billeteras",
+        "ADD_BUTTON": "Agregar Cuenta",
+        "EMPTY": "No se encontraron cuentas. ¡Crea una para comenzar!",
+        "DELETE_CONFIRM": "¿Estás seguro de eliminar esta cuenta?",
+        "MODAL": {
+            "EDIT_TITLE": "Editar Cuenta",
+            "NEW_TITLE": "Nueva Cuenta",
+            "NAME_LABEL": "Nombre",
+            "NAME_PLACEHOLDER": "Ej. Billetera Principal",
+            "TYPE_LABEL": "Tipo",
+            "BALANCE_LABEL": "Balance Actual",
+            "COLOR_LABEL": "Color",
+            "ICON_LABEL": "Icono",
+            "TYPES": {
+                "CASH": "Efectivo",
+                "BANK": "Banco",
+                "CREDIT": "Tarjeta de Crédito",
+                "INVESTMENT": "Inversión",
+                "OTHER": "Otro"
+            }
+        }
+    },
+    "CATEGORIES": {
+        "TITLE": "Categorías",
+        "SUBTITLE": "Organiza tus finanzas",
+        "ADD_BUTTON": "Agregar Categoría",
+        "EMPTY": "No se encontraron categorías. ¡Crea una para comenzar!",
+        "DELETE_CONFIRM": "¿Estás seguro de eliminar esta categoría? Las subcategorías quedarán huérfanas.",
+        "INCOME": "Ingresos",
+        "EXPENSE": "Gastos",
+        "TRANSFER": "Transferencias",
+        "MODAL": {
+            "EDIT_TITLE": "Editar Categoría",
+            "NEW_TITLE": "Nueva Categoría",
+            "NAME_LABEL": "Nombre",
+            "NAME_PLACEHOLDER": "Ej. Supermercado",
+            "TYPE_LABEL": "Tipo",
+            "PARENT_LABEL": "Categoría Padre (Opcional)",
+            "NO_PARENT": "Sin Padre",
+            "COLOR_LABEL": "Color",
+            "ICON_LABEL": "Icono",
+            "TYPES": {
+                "INCOME": "Ingreso",
+                "EXPENSE": "Gasto",
+                "TRANSFER": "Transferencia"
+            }
+        }
+    },
+    "TRANSACTIONS": {
+        "TITLE": "Transacciones",
+        "SUBTITLE": "Rastrea ingresos y gastos",
+        "ADD_BUTTON": "Agregar Transacción",
+        "IMPORT_BUTTON": "Importar CSV",
+        "FILTER_ACCOUNTS": "Todas las Cuentas",
+        "FILTER_CATEGORIES": "Todas las Categorías",
+        "EMPTY": "No se encontraron transacciones.",
+        "DELETE_CONFIRM": "¿Eliminar transacción?",
+        "MODAL": {
+            "EDIT_TITLE": "Editar Transacción",
+            "NEW_TITLE": "Nueva Transacción",
+            "ACCOUNT_LABEL": "Cuenta",
+            "CATEGORY_LABEL": "Categoría",
+            "SELECT_ACCOUNT": "Seleccionar Cuenta",
+            "SELECT_CATEGORY": "Seleccionar Categoría",
+            "AMOUNT_LABEL": "Monto",
+            "DATE_LABEL": "Fecha",
+            "DESCRIPTION_LABEL": "Descripción (Opcional)",
+            "DESCRIPTION_PLACEHOLDER": "Notas..."
+        },
+        "IMPORT_MODAL": {
+            "TITLE": "Importar CSV",
+            "INSTRUCTION": "Sube un archivo CSV para importar transacciones.",
+            "UPLOAD_BUTTON": "Subir",
+            "ALERT_NO_VALID": "No se encontraron transacciones válidas. Revisa las cabeceras: Date, Amount, Description, Category, Account"
+        }
+    },
+    "COMMON": {
+        "LOADING": "Cargando...",
+        "SAVE": "Guardar",
+        "SAVING": "Guardando...",
+        "CANCEL": "Cancelar",
+        "DELETE": "Eliminar",
+        "EDIT": "Editar",
+        "ADD": "Agregar",
+        "CONFIRM_DELETE": "¿Estás seguro de eliminar este elemento?",
+        "EMPTY_STATE": "No se encontraron elementos."
+    }
+}

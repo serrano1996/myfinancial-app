@@ -1,0 +1,81 @@
+<div class="page-container">
+    <header class="page-header flex justify-between items-center">
+        <div>
+            <h1>{{ 'TRANSACTIONS.TITLE' | translate }}</h1>
+            <p class="subtitle">{{ 'TRANSACTIONS.SUBTITLE' | translate }}</p>
+        </div>
+        <div class="header-actions">
+            <button class="btn btn-secondary" (click)="openImportModal()">
+                <span>📥 {{ 'TRANSACTIONS.IMPORT_BUTTON' | translate }}</span>
+            </button>
+            <button class="btn btn-primary" (click)="openCreateModal()">
+                <span>+ {{ 'TRANSACTIONS.ADD_BUTTON' | translate }}</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Filters -->
+    <div class="filters-bar card">
+        <div class="filter-group">
+            <select [(ngModel)]="accountId" (change)="loadTransactions()">
+                <option value="">{{ 'TRANSACTIONS.FILTER_ACCOUNTS' | translate }}</option>
+                <option *ngFor="let acc of accounts" [value]="acc.id">{{ acc.name }}</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <select [(ngModel)]="categoryId" (change)="loadTransactions()">
+                <option value="">{{ 'TRANSACTIONS.FILTER_CATEGORIES' | translate }}</option>
+                <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.name }}</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <input type="date" [(ngModel)]="startDate" (change)="loadTransactions()">
+        </div>
+        <div class="filter-group">
+            <input type="date" [(ngModel)]="endDate" (change)="loadTransactions()">
+        </div>
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="loading" class="loading-state">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Transactions List -->
+    <div *ngIf="!loading" class="transactions-list">
+        <div *ngFor="let tx of transactions" class="card tx-card" (click)="openEditModal(tx)">
+            <div class="tx-left">
+                <div class="tx-icon" [style.background-color]="(tx.categories?.color || '#64748b') + '20'"
+                    [style.color]="tx.categories?.color || '#64748b'">
+                    {{ tx.categories?.icon || '📄' }}
+                </div>
+                <div class="tx-info">
+                    <h3>{{ tx.categories?.name || 'Uncategorized' }}</h3>
+                    <p class="tx-meta">{{ tx.accounts?.name }} • {{ tx.date | date:'mediumDate' }}</p>
+                    <p *ngIf="tx.description" class="tx-desc">{{ tx.description }}</p>
+                </div>
+            </div>
+            <div class="tx-right">
+                <p class="amount" [class.income]="tx.categories?.type === 'income'"
+                    [class.expense]="tx.categories?.type === 'expense' || tx.categories?.type === 'transfer'">
+                    {{ tx.categories?.type === 'expense' || tx.categories?.type === 'transfer' ? '-' : '+' }}{{
+                    tx.amount | currency:'EUR' }}
+                </p>
+                <button class="btn-icon delete-btn" (click)="deleteTransaction(tx.id, $event)">
+                    🗑️
+                </button>
+            </div>
+        </div>
+
+        <div *ngIf="transactions.length === 0" class="empty-state">
+            <p>{{ 'TRANSACTIONS.EMPTY' | translate }}</p>
+        </div>
+    </div>
+
+    <app-transaction-form-modal [visible]="showModal" [transaction]="editingTransaction" [accounts]="accounts"
+        [categories]="categories" [loading]="modalLoading" (save)="handleSave($event)"
+        (cancel)="closeModal()"></app-transaction-form-modal>
+
+    <app-csv-import-modal [visible]="showImportModal" (cancel)="closeImportModal()"
+        (import)="handleImport($event)"></app-csv-import-modal>
+</div>
