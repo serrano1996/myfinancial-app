@@ -9,7 +9,8 @@
     --accent: #f472b6;
 
     --bg-dark: #0f172a;
-    --bg-card: rgba(30, 41, 59, 0.7);
+    --bg-card: rgba(30, 41, 59, 0.4);
+    /* More transparent for glass effect */
     --bg-glass: rgba(15, 23, 42, 0.6);
 
     --text-main: #f8fafc;
