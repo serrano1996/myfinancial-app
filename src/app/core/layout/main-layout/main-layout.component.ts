@@ -15,10 +15,29 @@ export class MainLayoutComponent {
 
   isCollapsed = false;
 
-  constructor(private authService: AuthService, private router: Router) { }
+  constructor(private authService: AuthService, private router: Router) {
+    this.checkScreenSize();
+    window.addEventListener('resize', () => {
+      this.checkScreenSize();
+    });
+  }
+
+  private checkScreenSize() {
+    if (window.innerWidth < 768) {
+      this.isCollapsed = true;
+    } else {
+      this.isCollapsed = false;
+    }
+  }
 
   toggleSidebar() {
     this.isCollapsed = !this.isCollapsed;
+  }
+
+  closeSidebar() {
+    if (window.innerWidth < 768) {
+      this.isCollapsed = true;
+    }
   }
 
   async logout() {

@@ -84,7 +84,9 @@
 }
 
 @media (max-width: 768px) {
-    .charts-grid {
+
+    .charts-grid,
+    .dashboard-grid {
         grid-template-columns: 1fr;
     }
 }

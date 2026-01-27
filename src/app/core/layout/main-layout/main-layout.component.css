@@ -246,3 +246,143 @@
     justify-content: center;
     padding: 0.75rem 0;
 }
+
+/* Mobile Header & Overlay */
+.mobile-header {
+    display: none;
+    align-items: center;
+    gap: 1rem;
+    padding-bottom: 1.5rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.mobile-toggle-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: var(--text-main);
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.mobile-logo-text {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 45;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@media (max-width: 768px) {
+    .sidebar-overlay {
+        display: block;
+    }
+
+    .mobile-header {
+        display: flex;
+        align-items: center;
+        /* Use relative positioning for absolute centering of logo */
+        position: relative;
+        height: 60px;
+        padding: 0 1rem;
+        margin-bottom: 1rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        background: rgba(15, 23, 42, 0.5);
+    }
+
+    .mobile-toggle-btn {
+        /* Keep it on the left */
+        z-index: 10;
+    }
+
+    .mobile-brand {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .mobile-logo-icon {
+        width: 32px;
+        height: 32px;
+    }
+
+
+    .sidebar {
+        transform: translateX(0);
+        width: 280px;
+        /* Slightly wider on mobile for better touch targets if needed, or keep 260 */
+        box-shadow: 4px 0 24px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Override the generic collapsed state for mobile */
+    .sidebar.collapsed {
+        transform: translateX(-100%);
+        width: 280px;
+        /* Keep full width so it slides out correctly */
+    }
+
+    .sidebar-header {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    /* We need a close button inside the sidebar or rely on the overlay.
+       The existing toggle button works to toggle (close).
+       But style might need adjustment.
+    */
+    .sidebar .toggle-btn {
+        display: flex;
+        /* Ensure it's visible when open */
+    }
+
+    .main-content {
+        margin-left: 0 !important;
+        padding: 1rem;
+        width: 100%;
+    }
+
+    .sidebar.collapsed~.main-content {
+        margin-left: 0 !important;
+    }
+
+    .mobile-header {
+        display: flex;
+        align-items: center;
+        position: relative;
+        height: 60px;
+        /* Pull header out of main-content padding */
+        margin: -1rem -1rem 1.5rem -1rem;
+        padding: 0 1rem;
+        width: calc(100% + 2rem);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        background: rgba(15, 23, 42, 0.8);
+        /* Darker background */
+        backdrop-filter: blur(12px);
+    }
+}
