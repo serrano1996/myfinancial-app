@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { SupabaseService } from './supabase.service';
-import { AuthSession, User, Provider, Session } from '@supabase/supabase-js';
+import { AuthSession, User, Provider, Session, UserAttributes } from '@supabase/supabase-js';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
@@ -35,7 +35,7 @@ export class AuthService {
     this._user.next(data.session?.user ?? null);
   }
 
-  async signUp(email: string, password: string, data?: { full_name: string }) {
+  async signUp(email: string, password: string, data?: any) {
     return this.supabaseService.supabase.auth.signUp({
       email,
       password,
@@ -54,6 +54,35 @@ export class AuthService {
 
   async signOut() {
     return this.supabaseService.supabase.auth.signOut();
+  }
+
+  async updateUser(attributes: UserAttributes) {
+    const { data, error } = await this.supabaseService.supabase.auth.updateUser(attributes);
+    if (error) throw error;
+    if (data.user) {
+      this._user.next(data.user);
+    }
+    return data;
+  }
+
+  async uploadAvatar(userId: string, file: File): Promise<string> {
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${userId}-${Math.random()}.${fileExt}`;
+    const filePath = `${fileName}`;
+
+    const { error: uploadError } = await this.supabaseService.supabase.storage
+      .from('avatars')
+      .upload(filePath, file, { upsert: true });
+
+    if (uploadError) {
+      throw uploadError;
+    }
+
+    const { data } = this.supabaseService.supabase.storage
+      .from('avatars')
+      .getPublicUrl(filePath);
+
+    return data.publicUrl;
   }
 
   get currentUser() {

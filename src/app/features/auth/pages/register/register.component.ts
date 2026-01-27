@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../../core/services/auth.service';
+import { ProfileService } from '../../../../core/services/profile.service';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
@@ -23,6 +24,7 @@ export class RegisterComponent {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
+    private profileService: ProfileService,
     private router: Router
   ) {
     this.registerForm = this.fb.group({
@@ -48,8 +50,21 @@ export class RegisterComponent {
     const { name, email, password } = this.registerForm.value;
 
     try {
-      const { error } = await this.authService.signUp(email, password, { full_name: name });
+      const { data, error } = await this.authService.signUp(email, password, {
+        full_name: name,
+        theme: 'dark',
+        language: 'es'
+      });
       if (error) throw error;
+
+      if (data?.user && data?.session) {
+        this.profileService.updateProfile(data.user.id, {
+          theme: 'dark',
+          language: 'es'
+        }).subscribe({
+          error: (err) => console.error('Error setting default profile', err)
+        });
+      }
 
       // Show success modal
       this.showSuccessModal = true;

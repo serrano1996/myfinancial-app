@@ -8,7 +8,7 @@ CREATE TABLE profiles (
   updated_at TIMESTAMP WITH TIME ZONE,
   currency TEXT DEFAULT 'EUR',
   language TEXT DEFAULT 'es',
-  theme TEXT DEFAULT 'light'
+  theme TEXT DEFAULT 'dark'
 );
 
 -- Enable Row Level Security (RLS) for profiles

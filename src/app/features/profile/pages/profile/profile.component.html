@@ -1,19 +1,40 @@
 <div class="profile-container">
     <header class="page-header">
-        <h1>{{ 'LAYOUT.SIDEBAR.PROFILE' | translate }}</h1>
-        <p class="subtitle">Manage your account settings</p>
+        <h1>{{ 'PROFILE.TITLE' | translate }}</h1>
+        <p class="subtitle">{{ 'PROFILE.SUBTITLE' | translate }}</p>
     </header>
 
     <div class="profile-grid">
         <!-- User Info Card -->
         <div class="card profile-card">
             <div class="user-info">
-                <div class="avatar-placeholder">
-                    {{ user?.email?.charAt(0)?.toUpperCase() }}
+                <div class="avatar-wrapper">
+                    <input type="file" #fileInput (change)="onAvatarSelected($event)" accept="image/*"
+                        style="display: none;">
+
+                    <div class="avatar-content">
+                        <img *ngIf="user?.user_metadata?.['avatar_url']" [src]="user?.user_metadata?.['avatar_url']"
+                            alt="Avatar" class="avatar-img">
+
+                        <div *ngIf="!user?.user_metadata?.['avatar_url']" class="avatar-placeholder">
+                            {{ user?.email?.charAt(0)?.toUpperCase() }}
+                        </div>
+                    </div>
+
+                    <button class="avatar-edit-btn" (click)="fileInput.click()"
+                        [title]="'PROFILE.AVATAR_CHANGE' | translate">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z">
+                            </path>
+                            <circle cx="12" cy="13" r="4"></circle>
+                        </svg>
+                    </button>
                 </div>
+
                 <div class="user-details">
-                    <h3>{{ user?.email }}</h3>
-                    <p class="role">User</p>
+                    <h3>{{ user?.user_metadata?.['full_name'] || user?.email }}</h3>
+                    <p class="email-subtitle" *ngIf="user?.user_metadata?.['full_name']">{{ user?.email }}</p>
                 </div>
             </div>
 
@@ -34,50 +55,132 @@
 
         <!-- Settings Form -->
         <div class="card settings-card">
-            <h2>App Settings</h2>
+            <h2>
+                <span style="font-size: 1.5rem;">⚙️</span>
+                {{ 'PROFILE.SETTINGS' | translate }}
+            </h2>
 
             <form [formGroup]="profileForm" (ngSubmit)="updateProfile()">
                 <div *ngIf="successMessage" class="alert success-alert">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
                     {{ successMessage }}
                 </div>
                 <div *ngIf="errorMessage" class="alert error-alert">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
                     {{ errorMessage }}
                 </div>
 
+                <!-- Name Field -->
                 <div class="form-group">
-                    <label>Currency</label>
-                    <select formControlName="currency">
-                        <option *ngFor="let curr of currencies" [value]="curr.code">
-                            {{ curr.label }}
-                        </option>
-                    </select>
+                    <label>{{ 'PROFILE.FULL_NAME' | translate }}</label>
+                    <input type="text" formControlName="fullName" class="form-input"
+                        [placeholder]="'PROFILE.NAME_PLACEHOLDER' | translate">
                 </div>
 
                 <div class="form-group">
-                    <label>Language</label>
-                    <select formControlName="language">
-                        <option *ngFor="let lang of languages" [value]="lang.code">
-                            {{ lang.label }}
-                        </option>
-                    </select>
+                    <label>{{ 'PROFILE.CURRENCY' | translate }}</label>
+                    <div class="select-wrapper">
+                        <select formControlName="currency">
+                            <option *ngFor="let curr of currencies" [value]="curr.code">
+                                {{ curr.label | translate }}
+                            </option>
+                        </select>
+                        <svg class="select-arrow" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </div>
                 </div>
 
                 <div class="form-group">
-                    <label>Theme</label>
-                    <select formControlName="theme">
-                        <option *ngFor="let theme of themes" [value]="theme.code">
-                            {{ theme.label }}
-                        </option>
-                    </select>
+                    <label>{{ 'PROFILE.LANGUAGE' | translate }}</label>
+                    <div class="select-wrapper">
+                        <select formControlName="language">
+                            <option *ngFor="let lang of languages" [value]="lang.code">
+                                {{ lang.label | translate }}
+                            </option>
+                        </select>
+                        <svg class="select-arrow" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>{{ 'PROFILE.THEME' | translate }}</label>
+                    <div class="select-wrapper">
+                        <select formControlName="theme">
+                            <option *ngFor="let theme of themes" [value]="theme.code">
+                                {{ theme.label | translate }}
+                            </option>
+                        </select>
+                        <svg class="select-arrow" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </div>
                 </div>
 
                 <div class="form-actions">
                     <button type="submit" class="btn btn-primary" [disabled]="loading">
-                        <span *ngIf="!loading">{{ 'COMMON.SAVE' | translate }}</span>
-                        <span *ngIf="loading">{{ 'COMMON.SAVING' | translate }}</span>
+                        <span *ngIf="!loading">{{ 'PROFILE.SAVE_CHANGES' | translate }}</span>
+                        <div *ngIf="loading" class="spinner-sm"></div>
+                        <span *ngIf="loading">{{ 'PROFILE.SAVING' | translate }}</span>
                     </button>
                 </div>
             </form>
+
+            <div class="password-section">
+                <button type="button" class="btn-text" (click)="togglePasswordSection()">
+                    🔒 {{ 'PROFILE.CHANGE_PASSWORD' | translate }}
+                </button>
+
+                <div *ngIf="showPasswordSection" class="password-form-container" [class.active]="showPasswordSection">
+                    <form [formGroup]="passwordForm" (ngSubmit)="updatePassword()">
+                        <div *ngIf="passwordSuccessMessage" class="alert success-alert">
+                            {{ passwordSuccessMessage }}
+                        </div>
+                        <div *ngIf="passwordErrorMessage" class="alert error-alert">
+                            {{ passwordErrorMessage }}
+                        </div>
+
+                        <div class="form-group">
+                            <label>{{ 'PROFILE.CURRENT_PASSWORD' | translate }}</label>
+                            <input type="password" formControlName="currentPassword" class="form-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label>{{ 'PROFILE.NEW_PASSWORD' | translate }}</label>
+                            <input type="password" formControlName="newPassword" class="form-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label>{{ 'PROFILE.CONFIRM_PASSWORD' | translate }}</label>
+                            <input type="password" formControlName="confirmPassword" class="form-input">
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-secondary" [disabled]="passwordLoading">
+                                <span *ngIf="!passwordLoading">{{ 'PROFILE.UPDATE_PASSWORD' | translate }}</span>
+                                <div *ngIf="passwordLoading" class="spinner-sm"></div>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 </div>
