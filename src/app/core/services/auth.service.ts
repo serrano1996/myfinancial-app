@@ -13,11 +13,9 @@ export class AuthService {
   constructor(private supabaseService: SupabaseService) {
     this.loadSession();
     this.supabaseService.supabase.auth.onAuthStateChange((event, session) => {
+      console.log('AuthService: AuthStateChange', event, session ? 'Session found' : 'No session');
       this._session.next(session);
       this._user.next(session?.user ?? null);
-
-      // Auto-create profile if needed is handled by DB trigger,
-      // but we might want to fetch profile here.
     });
   }
 
@@ -30,9 +28,16 @@ export class AuthService {
   }
 
   async loadSession() {
-    const { data } = await this.supabaseService.supabase.auth.getSession();
-    this._session.next(data.session);
-    this._user.next(data.session?.user ?? null);
+    console.log('AuthService: Waiting for onAuthStateChange to initialize session...');
+
+    // Fallback safety: If onAuthStateChange doesn't fire in 2s, assume no session
+    setTimeout(() => {
+      if (this._session.value === undefined) {
+        console.warn('AuthService: onAuthStateChange timeout, falling back to null');
+        this._session.next(null);
+        this._user.next(null);
+      }
+    }, 2000);
   }
 
   async signUp(email: string, password: string, data?: any) {

@@ -1,1 +1,10 @@
-<router-outlet></router-outlet>
+<div *ngIf="isInitialized; else initialLoader">
+    <router-outlet></router-outlet>
+</div>
+
+<ng-template #initialLoader>
+    <div class="app-initial-loader">
+        <div class="spinner"></div>
+        <p>MyFinance</p>
+    </div>
+</ng-template>

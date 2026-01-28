@@ -4,7 +4,7 @@
         <p class="subtitle">{{ 'PROFILE.SUBTITLE' | translate }}</p>
     </header>
 
-    <div class="profile-grid">
+    <div class="profile-grid" *ngIf="!loading; else loaderTpl">
         <!-- User Info Card -->
         <div class="card profile-card">
             <div class="user-info">
@@ -183,4 +183,11 @@
             </div>
         </div>
     </div>
+
+    <ng-template #loaderTpl>
+        <div class="loader-container">
+            <div class="spinner-lg"></div>
+            <p>{{ 'PROFILE.LOADING' | translate }}</p>
+        </div>
+    </ng-template>
 </div>

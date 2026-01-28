@@ -167,7 +167,8 @@
         "SUCCESS_PASSWORD": "Password updated successfully",
         "ERROR_PASSWORD_MATCH": "Passwords do not match",
         "ERROR_CURRENT_PASSWORD": "Current password is incorrect",
-        "SUCCESS_AVATAR": "Profile photo updated"
+        "SUCCESS_AVATAR": "Profile photo updated",
+        "LOADING": "Loading profile..."
     },
     "COMMON": {
         "LOADING": "Loading...",

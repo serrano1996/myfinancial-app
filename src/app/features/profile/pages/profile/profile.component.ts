@@ -65,13 +65,18 @@ export class ProfileComponent implements OnInit {
   }
 
   ngOnInit() {
+    console.log('ProfileComponent: ngOnInit');
     this.authService.user$.subscribe(user => {
+      console.log('ProfileComponent: user update', user);
       this.user = user;
       if (user) {
+        console.log('ProfileComponent: Calling loadProfile for', user.id);
         this.loadProfile(user.id);
         if (user.user_metadata?.['full_name']) {
           this.profileForm.patchValue({ fullName: user.user_metadata['full_name'] });
         }
+      } else {
+        console.log('ProfileComponent: No user found');
       }
     });
 
@@ -88,8 +93,10 @@ export class ProfileComponent implements OnInit {
 
   loadProfile(userId: string) {
     this.loading = true;
+    console.log('ProfileComponent: loadProfile start');
     this.profileService.getProfile(userId).subscribe({
       next: (profile) => {
+        console.log('ProfileComponent: Profile loaded', profile);
         if (profile) {
           const currentTheme = this.themeService.getCurrentTheme();
           this.profileForm.patchValue({
