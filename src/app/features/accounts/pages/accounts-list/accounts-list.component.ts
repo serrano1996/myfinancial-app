@@ -7,6 +7,24 @@ import { Tables, TablesInsert, TablesUpdate } from '../../../../types/supabase';
 import { User } from '@supabase/supabase-js';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
+import { TransactionsService } from '../../../../core/services/transactions.service';
+
+interface AccountWithTransactions extends Tables<'accounts'> {
+  recentTransactions?: {
+    id: string;
+    description?: string | null; // Optional if you rely on category name
+    amount: number;
+    date: string;
+    // We get a joined object from Supabase, usually has categories: { icon, color, ... }
+    categories?: {
+      name: string;
+      icon: string;
+      color: string;
+      type: string;
+    } | null;
+  }[];
+}
+
 @Component({
   selector: 'app-accounts-list',
   standalone: true,
@@ -15,7 +33,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
   styleUrl: './accounts-list.component.css'
 })
 export class AccountsListComponent implements OnInit {
-  accounts: Tables<'accounts'>[] = [];
+  accounts: AccountWithTransactions[] = [];
   loading = true;
   user: User | null = null;
 
@@ -26,6 +44,7 @@ export class AccountsListComponent implements OnInit {
 
   constructor(
     private accountsService: AccountsService,
+    private transactionsService: TransactionsService, // Inject TransactionService
     private authService: AuthService,
     private translate: TranslateService
   ) { }
@@ -44,8 +63,17 @@ export class AccountsListComponent implements OnInit {
     this.loading = true;
     this.accountsService.getAccounts(this.user.id).subscribe({
       next: (data) => {
-        this.accounts = data;
+        this.accounts = data; // Assign base accounts data
         this.loading = false;
+
+        // Fetch recent transactions for each account
+        this.accounts.forEach(acc => {
+          if (!this.user) return; // Safety check
+          this.transactionsService.getTransactions(this.user.id, 0, 3, { accountId: acc.id })
+            .subscribe(res => {
+              acc.recentTransactions = res.data;
+            });
+        });
       },
       error: (err) => {
         console.error(err);

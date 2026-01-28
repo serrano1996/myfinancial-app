@@ -67,6 +67,7 @@
         "ADD_BUTTON": "Add Account",
         "EMPTY": "No accounts found. Create one to get started!",
         "DELETE_CONFIRM": "Are you sure you want to delete this account?",
+        "NO_ACTIVITY": "No recent activity",
         "MODAL": {
             "EDIT_TITLE": "Edit Account",
             "NEW_TITLE": "New Account",

@@ -1,10 +1,16 @@
 .page-container {
+    padding: 2rem;
     max-width: 1200px;
     margin: 0 auto;
 }
 
 .page-header {
     margin-bottom: 2rem;
+}
+
+.subtitle {
+    color: var(--text-secondary);
+    margin-top: 0.5rem;
 }
 
 .accounts-grid {
@@ -14,26 +20,25 @@
 }
 
 .account-card {
+    border-left: 4px solid var(--primary);
     cursor: pointer;
     transition: transform 0.2s, box-shadow 0.2s;
-    border-left: 4px solid transparent;
-    /* Set inline */
+    overflow: hidden;
     position: relative;
-    display: flex;
-    justify-content: space-between;
+    /* Contain inner elements */
 }
 
 .account-card:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-lg);
-    background: rgba(30, 41, 59, 0.9);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
 }
 
 .card-content {
     display: flex;
     align-items: center;
     gap: 1rem;
-    flex: 1;
+    padding-bottom: 1rem;
+    /* Space before divider */
 }
 
 .account-icon {
@@ -44,69 +49,219 @@
     align-items: center;
     justify-content: center;
     font-size: 1.5rem;
+    background: rgba(var(--primary-rgb), 0.1);
+    color: var(--primary);
+}
+
+.account-details {
+    flex: 1;
 }
 
 .account-details h3 {
-    font-size: 1.125rem;
-    margin-bottom: 0.25rem;
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
 }
 
 .account-type {
-    font-size: 0.875rem;
-    color: var(--text-muted);
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
 }
 
 .account-balance {
-    margin-left: auto;
     text-align: right;
-    padding-right: 1rem;
 }
 
-.card-actions {
+.amount {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+/* Transaction Summary Styles */
+.transaction-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    /* padding-top: 0.5rem; handled by divider margin */
+}
+
+.summary-divider {
+    height: 1px;
+    background-color: var(--border-color);
+    /* Need to ensure this var exists, or use #eee */
+    margin: 0 -1.5rem 0.5rem -1.5rem;
+    /* Extend to edges */
+    opacity: 0.5;
+}
+
+.mini-transaction {
     display: flex;
     align-items: center;
+    gap: 0.75rem;
+    font-size: 0.85rem;
+    padding: 0.25rem 0;
+}
+
+.tx-date {
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    min-width: 45px;
+}
+
+.tx-icon {
+    font-size: 1rem;
+    width: 20px;
+    text-align: center;
+}
+
+.tx-desc {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--text-primary);
+}
+
+.tx-amount {
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.tx-amount.expense {
+    color: #ef4444;
+    /* Red-500 */
+}
+
+.tx-amount.income {
+    color: #22c55e;
+    /* Green-500 */
+}
+
+.transaction-summary-empty {
+    padding-top: 1rem;
+    margin-top: 0.5rem;
+    text-align: center;
+    border-top: 1px dashed var(--border-color);
+    opacity: 0.7;
+}
+
+.empty-text {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    background: rgba(var(--surface-card-rgb), 0.5);
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    display: inline-block;
+    border: 1px solid var(--border-color);
+}
+
+
+/* Card Actions */
+/* Card Actions */
+.card-actions {
+    position: absolute;
+    bottom: 0.75rem;
+    right: 0.75rem;
+    opacity: 0;
+    /* Hidden by default to reduce clutter */
+    transform: translateY(5px);
+    transition: all 0.2s ease-in-out;
+    z-index: 20;
+}
+
+.account-card:hover .card-actions {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 .delete-btn {
-    opacity: 0;
-    transition: opacity 0.2s;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    background: rgba(255, 255, 255, 0.95);
+    /* High contrast */
+    color: #ef4444;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.account-card:hover .delete-btn {
-    opacity: 1;
+/* Dark mode support for the button background if needed */
+@media (prefers-color-scheme: dark) {
+    .delete-btn {
+        background: rgba(30, 30, 30, 0.95);
+        border-color: rgba(239, 68, 68, 0.3);
+    }
 }
 
 .delete-btn:hover {
-    background: rgba(239, 68, 68, 0.1);
+    background: #ef4444;
+    color: white;
+    border-color: #ef4444;
+    transform: scale(1.1) rotate(5deg);
+    box-shadow: 0 4px 8px rgba(239, 68, 68, 0.3);
 }
 
+.delete-btn svg {
+    display: block;
+}
+
+/* Loading & Empty States */
+.loading-state,
 .empty-state {
-    grid-column: 1 / -1;
-    text-align: center;
-    padding: 4rem;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: var(--radius-md);
-    border: 2px dashed rgba(255, 255, 255, 0.1);
-    color: var(--text-muted);
-}
-
-.loading-state {
     display: flex;
     justify-content: center;
-    padding: 4rem;
+    align-items: center;
+    padding: 3rem;
+    color: var(--text-secondary);
 }
 
 .spinner {
     width: 40px;
     height: 40px;
-    border: 4px solid rgba(255, 255, 255, 0.1);
-    border-left-color: var(--primary);
+    border: 3px solid rgba(var(--primary-rgb), 0.1);
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    border-top-color: var(--primary);
+    animation: spin 1s ease-in-out infinite;
 }
 
 @keyframes spin {
     to {
         transform: rotate(360deg);
+    }
+}
+
+/* Mobile Improvements */
+@media (max-width: 768px) {
+    .page-header {
+        flex-direction: column;
+        align-items: stretch !important;
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .page-header>div {
+        text-align: center;
+    }
+
+    .page-header h1 {
+        font-size: 1.75rem;
+    }
+
+    .subtitle {
+        margin-bottom: 0.5rem;
+    }
+
+    .page-header .btn {
+        width: 100%;
+        justify-content: center;
+        padding: 1rem;
     }
 }

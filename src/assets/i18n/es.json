@@ -67,6 +67,7 @@
         "ADD_BUTTON": "Agregar Cuenta",
         "EMPTY": "No se encontraron cuentas. ¡Crea una para comenzar!",
         "DELETE_CONFIRM": "¿Estás seguro de eliminar esta cuenta?",
+        "NO_ACTIVITY": "Sin actividad reciente",
         "MODAL": {
             "EDIT_TITLE": "Editar Cuenta",
             "NEW_TITLE": "Nueva Cuenta",

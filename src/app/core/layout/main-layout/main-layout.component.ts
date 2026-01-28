@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
@@ -13,21 +13,34 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
   templateUrl: './main-layout.component.html',
   styleUrl: './main-layout.component.css'
 })
-export class MainLayoutComponent implements OnInit {
+export class MainLayoutComponent implements OnInit, OnDestroy {
 
   isCollapsed = false;
+  private resizeListener: () => void;
 
   constructor(
     private authService: AuthService,
     private router: Router,
     private profileService: ProfileService,
     private themeService: ThemeService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private cdr: ChangeDetectorRef
   ) {
-    this.checkScreenSize();
-    window.addEventListener('resize', () => {
-      this.checkScreenSize();
-    });
+    // Initial check
+    this.isCollapsed = typeof window !== 'undefined' ? window.innerWidth < 768 : false;
+
+    // Bind resize listener
+    this.resizeListener = () => {
+      // Only auto-collapse if we shrink below 768px and aren't already collapsed
+      if (window.innerWidth < 768 && !this.isCollapsed) {
+        this.isCollapsed = true;
+        this.cdr.detectChanges();
+      }
+    };
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('resize', this.resizeListener);
+    }
   }
 
   ngOnInit() {
@@ -48,21 +61,22 @@ export class MainLayoutComponent implements OnInit {
     });
   }
 
-  private checkScreenSize() {
-    if (window.innerWidth < 768) {
-      this.isCollapsed = true;
-    } else {
-      this.isCollapsed = false;
+  ngOnDestroy() {
+    if (typeof window !== 'undefined') {
+      window.removeEventListener('resize', this.resizeListener);
     }
   }
 
   toggleSidebar() {
     this.isCollapsed = !this.isCollapsed;
+    console.log('Sidebar toggled. New state:', this.isCollapsed);
+    this.cdr.detectChanges(); // Force update
   }
 
   closeSidebar() {
     if (window.innerWidth < 768) {
       this.isCollapsed = true;
+      this.cdr.detectChanges();
     }
   }
 
