@@ -7,7 +7,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class AuthService {
-  private _session = new BehaviorSubject<Session | null>(null);
+  private _session = new BehaviorSubject<Session | null | undefined>(undefined);
   private _user = new BehaviorSubject<User | null>(null);
 
   constructor(private supabaseService: SupabaseService) {
@@ -21,7 +21,7 @@ export class AuthService {
     });
   }
 
-  get session$(): Observable<Session | null> {
+  get session$(): Observable<Session | null | undefined> {
     return this._session.asObservable();
   }
 
