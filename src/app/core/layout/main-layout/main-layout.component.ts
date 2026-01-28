@@ -69,7 +69,6 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
 
   toggleSidebar() {
     this.isCollapsed = !this.isCollapsed;
-    console.log('Sidebar toggled. New state:', this.isCollapsed);
     this.cdr.detectChanges(); // Force update
   }
 

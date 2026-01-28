@@ -8,17 +8,16 @@ export const authGuard: CanActivateFn = (route, state) => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  console.log('AuthGuard: Checking session...');
   return authService.session$.pipe(
-    tap((session: Session | null | undefined) => console.log('AuthGuard: Session state:', session)),
-    filter((session) => session !== undefined),
+    filter(session => session !== undefined), // Wait for session to be undefined (loading) or null/Session
     take(1),
     map(session => {
-      console.log('AuthGuard: Session resolved:', session ? 'Authenticated' : 'Not Authenticated');
-      if (session) {
+      const isAuthenticated = !!session;
+      if (isAuthenticated) {
         return true;
+      } else {
+        return router.createUrlTree(['/login']);
       }
-      return router.createUrlTree(['/login']);
     })
   );
 };
