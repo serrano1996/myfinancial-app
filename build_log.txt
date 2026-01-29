@@ -1,0 +1,65 @@
+
+> myfinancial-app@0.0.0 build
+> ng build
+
+- Building...
+
+Initial chunk files   | Names                       |  Raw size | Estimated transfer size
+chunk-LMK726I3.js     | -                           | 346.00 kB |                86.02 kB
+chunk-C75HISBO.js     | -                           | 106.25 kB |                26.80 kB
+polyfills-FFHMD2TL.js | polyfills                   |  33.71 kB |                11.02 kB
+styles-K6DE5YGG.css   | styles                      |   7.82 kB |                 1.18 kB
+main-V4HRHRPS.js      | main                        |   2.99 kB |                 1.26 kB
+
+                      | Initial total               | 496.76 kB |               126.28 kB
+
+Lazy chunk files      | Names                       |  Raw size | Estimated transfer size
+chunk-YT5JJZN2.js     | dashboard-component         | 139.52 kB |                43.86 kB
+chunk-5NLGDNLS.js     | transactions-list-component |  39.35 kB |                10.99 kB
+chunk-7QRWJ2JQ.js     | -                           |  38.55 kB |                 7.86 kB
+chunk-X75PCBSC.js     | profile-component           |  25.67 kB |                 5.65 kB
+chunk-XXQ5VQOT.js     | categories-list-component   |  19.67 kB |                 5.37 kB
+chunk-AZZ6GUZ6.js     | accounts-list-component     |  17.44 kB |                 4.73 kB
+chunk-SEWRATLC.js     | main-layout-component       |  16.47 kB |                 3.74 kB
+chunk-I6OAVOP6.js     | register-component          |  15.48 kB |                 4.15 kB
+chunk-DUM3Q6OP.js     | login-component             |  10.89 kB |                 3.23 kB
+chunk-X44O7GH4.js     | -                           |   1.82 kB |               554 bytes
+chunk-YDNCRPJ7.js     | -                           | 809 bytes |               809 bytes
+chunk-JEGG4B4L.js     | -                           | 616 bytes |               616 bytes
+chunk-PUBJG4OO.js     | -                           | 508 bytes |               508 bytes
+
+Application bundle generation failed. [12.729 seconds]
+
+▲ [WARNING] src/app/features/auth/pages/login/login.component.css exceeded maximum budget. Budget 2.00 kB was not met by 1.94 kB with a total of 3.94 kB.
+
+
+▲ [WARNING] src/app/features/categories/components/category-form-modal/category-form-modal.component.css exceeded maximum budget. Budget 2.00 kB was not met by 51 bytes with a total of 2.05 kB.
+
+
+▲ [WARNING] src/app/features/auth/pages/register/register.component.css exceeded maximum budget. Budget 2.00 kB was not met by 3.00 kB with a total of 5.00 kB.
+
+
+▲ [WARNING] src/app/core/layout/main-layout/main-layout.component.css exceeded maximum budget. Budget 2.00 kB was not met by 4.24 kB with a total of 6.24 kB.
+
+
+▲ [WARNING] src/app/features/accounts/pages/accounts-list/accounts-list.component.css exceeded maximum budget. Budget 2.00 kB was not met by 1.19 kB with a total of 3.19 kB.
+
+
+▲ [WARNING] src/app/features/profile/pages/profile/profile.component.css exceeded maximum budget. Budget 2.00 kB was not met by 7.52 kB with a total of 9.52 kB.
+
+
+▲ [WARNING] Module 'papaparse' used by 'src/app/features/transactions/pages/transactions-list/transactions-list.component.ts' is not ESM
+
+  CommonJS or AMD dependencies can cause optimization bailouts.
+  For more information see: https://angular.io/guide/build#configuring-commonjs-dependencies
+
+
+X [ERROR] src/app/features/auth/pages/register/register.component.css exceeded maximum budget. Budget 4.00 kB was not met by 1.00 kB with a total of 5.00 kB.
+
+
+X [ERROR] src/app/core/layout/main-layout/main-layout.component.css exceeded maximum budget. Budget 4.00 kB was not met by 2.24 kB with a total of 6.24 kB.
+
+
+X [ERROR] src/app/features/profile/pages/profile/profile.component.css exceeded maximum budget. Budget 4.00 kB was not met by 5.52 kB with a total of 9.52 kB.
+
+

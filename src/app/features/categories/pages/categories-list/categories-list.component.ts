@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import Swal from 'sweetalert2';
 import { CommonModule } from '@angular/common';
+import { forkJoin, of, Observable } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 import { AuthService } from '../../../../core/services/auth.service';
 import { CategoriesService } from '../../../../core/services/categories.service';
 import { CategoryFormModalComponent } from '../../components/category-form-modal/category-form-modal.component';
@@ -38,7 +41,7 @@ export class CategoriesListComponent implements OnInit {
   constructor(
     private categoriesService: CategoriesService,
     private authService: AuthService,
-    private translate: TranslateService
+    public translate: TranslateService
   ) { }
 
   ngOnInit() {
@@ -148,15 +151,68 @@ export class CategoriesListComponent implements OnInit {
     }
   }
 
+
+
   deleteCategory(id: string, event: Event) {
     event.stopPropagation();
-    if (confirm(this.translate.instant('CATEGORIES.DELETE_CONFIRM'))) {
-      this.categoriesService.deleteCategory(id).subscribe({
-        next: () => {
-          this.loadCategories();
-        },
-        error: (err) => console.error(err)
-      });
-    }
+
+    Swal.fire({
+      title: this.translate.instant('CATEGORIES.DELETE_CONFIRM_TITLE') || 'Are you sure?',
+      text: this.translate.instant('CATEGORIES.DELETE_CONFIRM_TEXT') || 'Sub-categories will be moved to the root level.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#ef4444',
+      cancelButtonColor: '#334155',
+      confirmButtonText: this.translate.instant('COMMON.DELETE') || 'Delete',
+      cancelButtonText: this.translate.instant('COMMON.CANCEL') || 'Cancel',
+      background: '#1e293b',
+      color: '#fff'
+    }).then((result: any) => {
+      if (result.isConfirmed) {
+        const categoryToDelete = this.categories.find(c => c.id === id);
+        const parentId = categoryToDelete?.parent_id || null;
+
+        // Find children
+        const children = this.categories.filter(c => c.parent_id === id);
+
+        let updateObservable$: Observable<any>;
+
+        if (children.length > 0) {
+          const updates = children.map(child =>
+            this.categoriesService.updateCategory(child.id, { parent_id: parentId })
+          );
+          updateObservable$ = forkJoin(updates);
+        } else {
+          updateObservable$ = of(null);
+        }
+
+        updateObservable$.pipe(
+          switchMap(() => this.categoriesService.deleteCategory(id))
+        ).subscribe({
+          next: () => {
+            this.loadCategories();
+            Swal.fire({
+              title: this.translate.instant('CATEGORIES.DELETE_SUCCESS_TITLE'),
+              text: this.translate.instant('CATEGORIES.DELETE_SUCCESS_TEXT'),
+              icon: 'success',
+              timer: 1500,
+              showConfirmButton: false,
+              background: '#1e293b',
+              color: '#fff'
+            });
+          },
+          error: (err: any) => {
+            console.error(err);
+            Swal.fire({
+              title: this.translate.instant('CATEGORIES.DELETE_ERROR_TITLE'),
+              text: this.translate.instant('CATEGORIES.DELETE_ERROR_TEXT'),
+              icon: 'error',
+              background: '#1e293b',
+              color: '#fff'
+            });
+          }
+        });
+      }
+    });
   }
 }

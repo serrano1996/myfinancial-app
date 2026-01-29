@@ -1,0 +1,23 @@
+
+> myfinancial-app@0.0.0 build
+> ng build
+
+- Building...
+
+Application bundle generation failed. [10.967 seconds]
+
+X [ERROR] TS2305: Module '"ngx-color-picker"' has no exported member 'ColorPickerModule'. [plugin angular-compiler]
+
+    src/app/features/categories/components/category-form-modal/category-form-modal.component.ts:8:9:
+      8 │ import { ColorPickerModule } from 'ngx-color-picker';
+        ╵          ~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] TS-991010: 'imports' must be an array of components, directives, pipes, or NgModules.
+  Value is of type '[CommonModule, ReactiveFormsModule, TranslateModule, (not statically analyzable)]'. [plugin angular-compiler]
+
+    src/app/features/categories/components/category-form-modal/category-form-modal.component.ts:13:11:
+      13 │   imports: [CommonModule, ReactiveFormsModule, TranslateModule, Co...
+         ╵            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+

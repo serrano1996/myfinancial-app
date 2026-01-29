@@ -92,6 +92,12 @@
         "ADD_BUTTON": "Agregar Categoría",
         "EMPTY": "No se encontraron categorías. ¡Crea una para comenzar!",
         "DELETE_CONFIRM": "¿Estás seguro de eliminar esta categoría? Las subcategorías quedarán huérfanas.",
+        "DELETE_CONFIRM_TITLE": "¿Estás seguro?",
+        "DELETE_CONFIRM_TEXT": "Las subcategorías se promoverán al nivel raíz.",
+        "DELETE_SUCCESS_TITLE": "¡Eliminado!",
+        "DELETE_SUCCESS_TEXT": "La categoría ha sido eliminada.",
+        "DELETE_ERROR_TITLE": "¡Error!",
+        "DELETE_ERROR_TEXT": "No se pudo eliminar la categoría.",
         "INCOME": "Ingresos",
         "EXPENSE": "Gastos",
         "TRANSFER": "Transferencias",
@@ -100,6 +106,8 @@
             "NEW_TITLE": "Nueva Categoría",
             "NAME_LABEL": "Nombre",
             "NAME_PLACEHOLDER": "Ej. Supermercado",
+            "NAME_EN_LABEL": "Nombre (Inglés)",
+            "NAME_EN_PLACEHOLDER": "Ej. Groceries",
             "TYPE_LABEL": "Tipo",
             "PARENT_LABEL": "Categoría Padre (Opcional)",
             "NO_PARENT": "Sin Padre",
@@ -180,6 +188,8 @@
         "EDIT": "Editar",
         "ADD": "Agregar",
         "CONFIRM_DELETE": "¿Estás seguro de eliminar este elemento?",
-        "EMPTY_STATE": "No se encontraron elementos."
+        "EMPTY_STATE": "No se encontraron elementos.",
+        "SEARCH_ICON": "Buscar icono...",
+        "NO_ICONS_FOUND": "No se encontraron iconos"
     }
 }

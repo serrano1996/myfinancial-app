@@ -71,17 +71,48 @@
 }
 
 /* Actions */
+/* Actions */
 .delete-btn {
-    opacity: 0;
-    transition: opacity 0.2s;
+    opacity: 1;
+    /* Always visible */
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    background: rgba(255, 255, 255, 0.95);
+    color: #ef4444;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.category-node:hover .delete-btn {
-    opacity: 1;
+/* Removed hover dependency for visibility */
+.category-node .delete-btn {
+    transform: translateY(0);
 }
 
 .delete-btn:hover {
-    background: rgba(239, 68, 68, 0.1);
+    background: #ef4444;
+    color: white;
+    border-color: #ef4444;
+    transform: scale(1.1) rotate(5deg);
+    box-shadow: 0 4px 8px rgba(239, 68, 68, 0.3);
+}
+
+.delete-btn svg {
+    display: block;
+}
+
+/* Dark mode adjustments */
+@media (prefers-color-scheme: dark) {
+    .delete-btn {
+        background: rgba(30, 30, 30, 0.95);
+        border-color: rgba(239, 68, 68, 0.3);
+    }
 }
 
 /* States */
@@ -112,5 +143,35 @@
 @keyframes spin {
     to {
         transform: rotate(360deg);
+    }
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 600px) {
+    .page-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+        text-align: center;
+    }
+
+    .page-header h1 {
+        margin-bottom: 0.25rem;
+    }
+
+    .page-header .btn {
+        width: 100%;
+        justify-content: center;
+        padding: 0.875rem;
+        /* Larger touch target */
+    }
+
+    .category-node {
+        padding: 1rem;
+        /* More space for touch */
+    }
+
+    .category-tree {
+        gap: 0.75rem;
     }
 }

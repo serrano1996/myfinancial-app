@@ -1,13 +1,16 @@
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Tables } from '../../../../types/supabase';
 import { TranslateModule } from '@ngx-translate/core';
+import { ICON_LIBRARY, IconDefinition } from '../../../../core/constants/icon-library';
+
+import { ColorPickerDirective } from 'ngx-color-picker';
 
 @Component({
   selector: 'app-category-form-modal',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, TranslateModule],
+  imports: [CommonModule, ReactiveFormsModule, TranslateModule, ColorPickerDirective],
   templateUrl: './category-form-modal.component.html',
   styleUrl: './category-form-modal.component.css'
 })
@@ -20,6 +23,12 @@ export class CategoryFormModalComponent implements OnChanges {
   @Output() cancel = new EventEmitter<void>();
 
   form: FormGroup;
+  searchControl = new FormControl('');
+  searchTerm: string = '';
+  customColor: string = '#3b82f6'; // Default for picker
+
+  // Store the full library
+  allIcons: IconDefinition[] = ICON_LIBRARY;
 
   categoryTypes = [
     { value: 'income', label: 'Income' },
@@ -27,30 +36,47 @@ export class CategoryFormModalComponent implements OnChanges {
     { value: 'transfer', label: 'Transfer' }
   ];
 
-  colors = [
+  // Mutable colors array
+  colors: string[] = [
     '#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#6366f1', '#14b8a6',
-    '#64748b', '#78716c'
-  ];
-
-  icons = [
-    '🍔', '🛒', '🏠', '💡', '🚗', '🚌', '✈️', '🎮', '⚽', '📚',
-    '💊', '🎁', '🐶', '👶', '👔', '💰', '💸', '🏦', '🔁', '❓'
+    '#64748b', '#78716c', '#84cc16', '#06b6d4', '#d946ef', '#f43f5e'
   ];
 
   constructor(private fb: FormBuilder) {
     this.form = this.fb.group({
       name: ['', Validators.required],
+      name_en: [''],
       type: ['expense', Validators.required],
       parent_id: [null],
       color: [this.colors[0]],
-      icon: [this.icons[0]]
+      icon: [this.allIcons[0].icon]
     });
+
+    this.searchControl.valueChanges.subscribe(val => {
+      this.searchTerm = val || '';
+    });
+  }
+
+  // Filter based on search
+  get filteredIcons(): string[] {
+    if (!this.searchTerm) {
+      return this.allIcons.map(def => def.icon);
+    }
+    const term = this.searchTerm.toLowerCase();
+    return this.allIcons
+      .filter(def =>
+        // Match icon itself or any tag
+        def.icon.includes(term) ||
+        def.tags.some(tag => tag.toLowerCase().includes(term))
+      )
+      .map(def => def.icon);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['category'] && this.category) {
       this.form.patchValue({
         name: this.category.name,
+        name_en: this.category.name_en,
         type: this.category.type,
         parent_id: this.category.parent_id,
         color: this.category.color,
@@ -59,11 +85,13 @@ export class CategoryFormModalComponent implements OnChanges {
     } else if (changes['visible'] && this.visible && !this.category) {
       this.form.reset({
         name: '',
+        name_en: '',
         type: 'expense',
         parent_id: null,
         color: this.colors[0],
-        icon: this.icons[0]
+        icon: this.allIcons[0].icon
       });
+      this.searchControl.setValue('');
     }
   }
 
@@ -93,7 +121,35 @@ export class CategoryFormModalComponent implements OnChanges {
     this.form.patchValue({ color });
   }
 
+  // Renamed to imply explicit action
+  addColorToList(color: string) {
+    if (color && !this.colors.includes(color)) {
+      this.colors.push(color);
+    }
+    this.selectColor(color);
+  }
+
+  removeColor(color: string, event: Event) {
+    event.stopPropagation();
+    event.preventDefault(); // Prevent selection
+    this.colors = this.colors.filter(c => c !== color);
+
+    // If we deleted the selected color, select the first one
+    if (this.form.value.color === color) {
+      if (this.colors.length > 0) {
+        this.selectColor(this.colors[0]);
+      } else {
+        this.selectColor('');
+      }
+    }
+  }
+
   selectIcon(icon: string) {
     this.form.patchValue({ icon });
+  }
+
+  get isCustomColor(): boolean {
+    const currentColor = this.form.value.color;
+    return !!currentColor && !this.colors.includes(currentColor);
   }
 }

@@ -8,20 +8,25 @@
         <form [formGroup]="form" (ngSubmit)="onSubmit()">
             <div class="modal-body">
 
-                <div class="form-group grid-2">
-                    <div>
-                        <label>{{ 'CATEGORIES.MODAL.NAME_LABEL' | translate }}</label>
-                        <input type="text" formControlName="name"
-                            placeholder="{{ 'CATEGORIES.MODAL.NAME_PLACEHOLDER' | translate }}">
-                    </div>
-                    <div>
-                        <label>{{ 'CATEGORIES.MODAL.TYPE_LABEL' | translate }}</label>
-                        <select formControlName="type">
-                            <option *ngFor="let type of categoryTypes" [value]="type.value">
-                                {{ ('CATEGORIES.MODAL.TYPES.' + (type.value | uppercase)) | translate }}
-                            </option>
-                        </select>
-                    </div>
+                <div class="form-group">
+                    <label>{{ 'CATEGORIES.MODAL.NAME_LABEL' | translate }}</label>
+                    <input type="text" formControlName="name"
+                        placeholder="{{ 'CATEGORIES.MODAL.NAME_PLACEHOLDER' | translate }}">
+                </div>
+
+                <div class="form-group">
+                    <label>{{ 'CATEGORIES.MODAL.NAME_EN_LABEL' | translate }}</label>
+                    <input type="text" formControlName="name_en"
+                        placeholder="{{ 'CATEGORIES.MODAL.NAME_EN_PLACEHOLDER' | translate }}">
+                </div>
+
+                <div class="form-group">
+                    <label>{{ 'CATEGORIES.MODAL.TYPE_LABEL' | translate }}</label>
+                    <select formControlName="type">
+                        <option *ngFor="let type of categoryTypes" [value]="type.value">
+                            {{ ('CATEGORIES.MODAL.TYPES.' + (type.value | uppercase)) | translate }}
+                        </option>
+                    </select>
                 </div>
 
                 <div class="form-group">
@@ -38,16 +43,41 @@
                     <label>{{ 'CATEGORIES.MODAL.COLOR_LABEL' | translate }}</label>
                     <div class="color-grid">
                         <div *ngFor="let color of colors" class="color-option" [style.background-color]="color"
-                            [class.selected]="form.value.color === color" (click)="selectColor(color)"></div>
+                            [class.selected]="form.value.color === color" (click)="selectColor(color)">
+                            <span class="remove-color" (click)="removeColor(color, $event)"
+                                title="Remove color">×</span>
+                        </div>
+
+                        <!-- Custom Color Picker -->
+                        <!-- Custom Color Picker -->
+                        <div class="color-option custom-picker" [class.selected]="isCustomColor"
+                            [style.background-color]="isCustomColor ? form.value.color : 'transparent'"
+                            [(colorPicker)]="customColor" [cpPosition]="'top'" [cpPositionRelativeToArrow]="true"
+                            [style.z-index]="2000" [cpUseRootViewContainer]="true" [cpOutputFormat]="'hex'"
+                            [cpAlphaChannel]="'disabled'" [cpOKButton]="true" [cpOKButtonText]="'OK'"
+                            [cpOKButtonClass]="'btn-ok-picker'" [cpSaveClickOutside]="false"
+                            (colorPickerChange)="selectColor($event)" (colorPickerSelect)="addColorToList($event)"
+                            title="{{ 'CATEGORIES.MODAL.CUSTOM_COLOR' | translate }}">
+                            <span *ngIf="!isCustomColor" class="plus-icon">+</span>
+                        </div>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label>{{ 'CATEGORIES.MODAL.ICON_LABEL' | translate }}</label>
+
+                    <div class="search-box">
+                        <input type="text" [formControl]="searchControl"
+                            placeholder="{{ 'COMMON.SEARCH_ICON' | translate }}" class="icon-search-input">
+                    </div>
+
                     <div class="icon-grid">
-                        <div *ngFor="let icon of icons" class="icon-option" [class.selected]="form.value.icon === icon"
-                            (click)="selectIcon(icon)">
+                        <div *ngFor="let icon of filteredIcons" class="icon-option"
+                            [class.selected]="form.value.icon === icon" (click)="selectIcon(icon)">
                             {{ icon }}
+                        </div>
+                        <div *ngIf="filteredIcons.length === 0" class="no-icons-found">
+                            {{ 'COMMON.NO_ICONS_FOUND' | translate }}
                         </div>
                     </div>
                 </div>

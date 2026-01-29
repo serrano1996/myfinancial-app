@@ -58,6 +58,7 @@ export type Database = {
                     icon: string | null
                     id: string
                     name: string
+                    name_en: string | null
                     parent_id: string | null
                     type: Database["public"]["Enums"]["category_type"]
                     updated_at: string
@@ -70,6 +71,7 @@ export type Database = {
                     icon?: string | null
                     id?: string
                     name: string
+                    name_en?: string | null
                     parent_id?: string | null
                     type: Database["public"]["Enums"]["category_type"]
                     updated_at?: string
@@ -82,6 +84,7 @@ export type Database = {
                     icon?: string | null
                     id?: string
                     name?: string
+                    name_en?: string | null
                     parent_id?: string | null
                     type?: Database["public"]["Enums"]["category_type"]
                     updated_at?: string
