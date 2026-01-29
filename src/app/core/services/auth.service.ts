@@ -13,6 +13,26 @@ export class AuthService {
   constructor(private supabaseService: SupabaseService) {
     this.loadSession();
     this.supabaseService.supabase.auth.onAuthStateChange((event, session) => {
+      // Check for 24-hour explicit expiry
+      if (session) {
+        const lastSignIn = new Date(session.user.last_sign_in_at || session.access_token.split('.')[1] ? 0 : Date.now()).getTime(); // Fallback if needed, but last_sign_in_at should be there
+        // Actually, simpler usage: check issued_at (iat) or similar, but let's use last_sign_in_at if available
+        // Better approach: check local timestamp if stored, or just rely on session.expires_at (which is token expiry)
+        // For "1 day max login session", we need to check if the session started > 24h ago.
+
+        // Supabase sessions refresh, so expires_at moves forward.
+        // We will check user.last_sign_in_at.
+        const signInTime = new Date(session.user.last_sign_in_at ?? '').getTime();
+        const oneDayMs = 24 * 60 * 60 * 1000;
+        const now = Date.now();
+
+        if (signInTime && (now - signInTime > oneDayMs)) {
+          console.log('Session expired (24h limit). Logging out.');
+          this.signOut();
+          return;
+        }
+      }
+
       this._session.next(session);
       this._user.next(session?.user ?? null);
     });
