@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -7,6 +7,7 @@ import { ProfileService } from '../../../../core/services/profile.service';
 import { ThemeService, Theme } from '../../../../core/services/theme.service';
 import { User } from '@supabase/supabase-js';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { Subscription, finalize, timeout, catchError, of } from 'rxjs';
 
 @Component({
   selector: 'app-profile',
@@ -15,7 +16,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css'
 })
-export class ProfileComponent implements OnInit {
+export class ProfileComponent implements OnInit, OnDestroy {
   profileForm: FormGroup;
   passwordForm: FormGroup;
   user: User | null = null;
@@ -26,6 +27,9 @@ export class ProfileComponent implements OnInit {
   passwordSuccessMessage: string | null = null;
   passwordErrorMessage: string | null = null;
   showPasswordSection = false;
+
+  private userSubscription: Subscription | null = null;
+  private profileSubscription: Subscription | null = null; // Track profile request
 
   currencies = [
     { code: 'EUR', label: 'PROFILE.CURRENCY_EUR' },
@@ -48,7 +52,8 @@ export class ProfileComponent implements OnInit {
     private authService: AuthService,
     private profileService: ProfileService,
     private translate: TranslateService,
-    private themeService: ThemeService
+    private themeService: ThemeService,
+    private cdr: ChangeDetectorRef
   ) {
     this.profileForm = this.fb.group({
       fullName: [''],
@@ -65,54 +70,79 @@ export class ProfileComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.authService.user$.subscribe(user => {
-      this.user = user;
-      if (user) {
+    this.userSubscription = this.authService.user$.subscribe(user => {
+      if (user && (!this.user || this.user.id !== user.id)) {
+        this.user = user;
         this.loadProfile(user.id);
         if (user.user_metadata?.['full_name']) {
           this.profileForm.patchValue({ fullName: user.user_metadata['full_name'] });
         }
+      } else {
+        this.user = user;
       }
     });
 
-    // Listen to language changes
     this.profileForm.get('language')?.valueChanges.subscribe(lang => {
       this.translate.use(lang);
     });
 
-    // Listen to theme changes
     this.profileForm.get('theme')?.valueChanges.subscribe(theme => {
       this.themeService.setTheme(theme as Theme);
     });
   }
 
+  ngOnDestroy() {
+    if (this.userSubscription) {
+      this.userSubscription.unsubscribe();
+    }
+    if (this.profileSubscription) {
+      this.profileSubscription.unsubscribe();
+    }
+  }
+
   loadProfile(userId: string) {
+    if (this.loading) return; // Prevent double trigger
     this.loading = true;
-    this.profileService.getProfile(userId).subscribe({
-      next: (profile) => {
-        if (profile) {
-          const currentTheme = this.themeService.getCurrentTheme();
-          this.profileForm.patchValue({
-            currency: profile.currency || 'EUR',
-            language: profile.language || 'es',
-            theme: profile.theme || currentTheme
-          });
-          // Ensure language is set on load
-          if (profile.language) {
-            this.translate.use(profile.language);
+
+    // Cancel previous request if any
+    if (this.profileSubscription) {
+      this.profileSubscription.unsubscribe();
+    }
+
+    this.profileSubscription = this.profileService.getProfile(userId)
+      .pipe(
+        timeout(5000), // Timeout after 5 seconds
+        catchError(err => {
+          console.error('Profile load timeout or error', err);
+          return of(null); // Return null on error to allow completion
+        }),
+        finalize(() => {
+          this.loading = false;
+          this.cdr.detectChanges(); // Force change detection
+        })
+      )
+      .subscribe({
+        next: (profile) => {
+          if (profile) {
+            const currentTheme = this.themeService.getCurrentTheme();
+            this.profileForm.patchValue({
+              currency: profile.currency || 'EUR',
+              language: profile.language || 'es',
+              theme: profile.theme || currentTheme
+            }, { emitEvent: false }); // Avoid triggering valueChanges loops if possible
+
+            if (profile.language) {
+              this.translate.use(profile.language);
+            }
+            if (profile.theme) {
+              this.themeService.setTheme(profile.theme as Theme);
+            }
           }
-          // Ensure theme is set on load (if different from default)
-          if (profile.theme) {
-            this.themeService.setTheme(profile.theme as Theme);
-          }
+        },
+        error: (err) => {
+          console.error('Error in subscription', err);
         }
-        this.loading = false;
-      },
-      error: (err) => {
-        console.error('Error loading profile', err);
-        this.loading = false;
-      }
-    });
+      });
   }
 
   async onAvatarSelected(event: any) {

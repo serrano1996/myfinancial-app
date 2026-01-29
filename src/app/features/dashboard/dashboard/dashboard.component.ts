@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
@@ -7,6 +7,7 @@ import { AccountsService } from '../../../core/services/accounts.service';
 import { TransactionsService } from '../../../core/services/transactions.service';
 import { User } from '@supabase/supabase-js';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { Subscription, forkJoin, of, timeout, catchError, finalize } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard',
@@ -15,7 +16,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
   user: User | null = null;
   loading = true;
 
@@ -55,20 +56,27 @@ export class DashboardComponent implements OnInit {
     ]
   };
 
-  recentActivity = []; // heatmap data placeholder or list
+  recentActivity = [];
+
+  private userSubscription: Subscription | null = null;
+  private dataSubscription: Subscription | null = null;
 
   constructor(
     private authService: AuthService,
     private accountsService: AccountsService,
     private transactionsService: TransactionsService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private cdr: ChangeDetectorRef
   ) { }
 
   ngOnInit() {
-    this.authService.user$.subscribe(user => {
-      this.user = user;
-      if (user) {
+    this.userSubscription = this.authService.user$.subscribe(user => {
+      // Only load if user changes or first load
+      if (user && (!this.user || this.user.id !== user.id)) {
+        this.user = user;
         this.loadDashboardData();
+      } else {
+        this.user = user;
       }
     });
 
@@ -78,19 +86,20 @@ export class DashboardComponent implements OnInit {
     });
   }
 
+  ngOnDestroy() {
+    if (this.userSubscription) {
+      this.userSubscription.unsubscribe();
+    }
+    if (this.dataSubscription) {
+      this.dataSubscription.unsubscribe();
+    }
+  }
+
   updateChartLabels() {
-    // Re-assign data to trigger change detection if needed or just update labels
-    // Ideally fetching translations for 'Income' and 'Expense' again
     const incomeLabel = this.translate.instant('DASHBOARD.INCOME');
     const expenseLabel = this.translate.instant('DASHBOARD.EXPENSES');
 
     this.barChartData.labels = [incomeLabel, expenseLabel];
-    // For Doughnut, labels come from keys, maybe need to translate them if they are static, 
-    // but here they are dynamic category names. 
-    // If we want to translate category names, we need a map or translation keys for categories.
-    // For now, let's just update the bar chart static labels.
-
-    // Force update
     this.barChartData = { ...this.barChartData };
   }
 
@@ -98,16 +107,29 @@ export class DashboardComponent implements OnInit {
     if (!this.user) return;
     this.loading = true;
 
-    // Load Accounts (for Balance)
-    this.accountsService.getAccounts(this.user.id).subscribe(accounts => {
-      this.totalBalance = accounts.reduce((sum, acc) => sum + (acc.balance || 0), 0);
-    });
+    if (this.dataSubscription) {
+      this.dataSubscription.unsubscribe();
+    }
 
-    // Load Recent Transactions (for Charts) - Fetching last 100 or specific range
-    this.transactionsService.getTransactions(this.user.id, 0, 100).subscribe(response => {
-      const txs = response.data;
+    this.dataSubscription = forkJoin({
+      accounts: this.accountsService.getAccounts(this.user.id).pipe(catchError(() => of([]))),
+      transactions: this.transactionsService.getTransactions(this.user.id, 0, 100).pipe(catchError(() => of({ data: [], count: 0 })))
+    }).pipe(
+      timeout(5000),
+      catchError(err => {
+        console.error('Dashboard load error or timeout', err);
+        return of({ accounts: [], transactions: { data: [], count: 0 } });
+      }),
+      finalize(() => {
+        this.loading = false;
+        this.cdr.detectChanges();
+      })
+    ).subscribe(({ accounts, transactions }) => {
+      // Process Accounts
+      this.totalBalance = (accounts || []).reduce((sum: number, acc: any) => sum + (acc.balance || 0), 0);
 
-      // Calculate Totals (Basic aggregation of fetched txs, ideally fetch dedicated stats endpoint)
+      // Process Transactions
+      const txs = transactions?.data || [];
       let income = 0;
       let expense = 0;
       const categoryMap = new Map<string, number>();
@@ -148,7 +170,7 @@ export class DashboardComponent implements OnInit {
         }]
       };
 
-      this.loading = false;
+      this.updateChartLabels(); // Ensure labels are correct
     });
   }
 }
