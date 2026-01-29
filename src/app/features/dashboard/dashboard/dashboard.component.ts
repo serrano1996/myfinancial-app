@@ -1,7 +1,9 @@
 import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BaseChartDirective } from 'ng2-charts';
-import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
+import { Chart, ChartConfiguration, ChartData, ChartType, registerables } from 'chart.js';
+
+Chart.register(...registerables);
 import { AuthService } from '../../../core/services/auth.service';
 import { AccountsService } from '../../../core/services/accounts.service';
 import { TransactionsService } from '../../../core/services/transactions.service';
