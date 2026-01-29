@@ -164,17 +164,14 @@
     position: absolute;
     bottom: 0.75rem;
     right: 0.75rem;
-    opacity: 0;
-    /* Hidden by default to reduce clutter */
-    transform: translateY(5px);
-    transition: all 0.2s ease-in-out;
+    /* Always visible */
+    /* opacity: 0; removed */
+    /* transform: translateY(5px); removed */
     z-index: 20;
 }
 
-.account-card:hover .card-actions {
-    opacity: 1;
-    transform: translateY(0);
-}
+/* Removed hover dependency */
+/* .account-card:hover .card-actions { ... } */
 
 .delete-btn {
     width: 34px;

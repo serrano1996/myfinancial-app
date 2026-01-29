@@ -6,6 +6,7 @@ import { AccountFormModalComponent } from '../../components/account-form-modal/a
 import { Tables, TablesInsert, TablesUpdate } from '../../../../types/supabase';
 import { User } from '@supabase/supabase-js';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import Swal from 'sweetalert2';
 
 import { TransactionsService } from '../../../../core/services/transactions.service';
 
@@ -139,13 +140,48 @@ export class AccountsListComponent implements OnInit {
 
   deleteAccount(id: string, event: Event) {
     event.stopPropagation();
-    if (confirm(this.translate.instant('ACCOUNTS.DELETE_CONFIRM'))) {
-      this.accountsService.deleteAccount(id).subscribe({
-        next: () => {
-          this.loadAccounts();
-        },
-        error: (err) => console.error(err)
-      });
-    }
+
+    Swal.fire({
+      title: this.translate.instant('ACCOUNTS.DELETE_CONFIRM_TITLE'),
+      text: this.translate.instant('ACCOUNTS.DELETE_CONFIRM_TEXT'),
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: this.translate.instant('COMMON.DELETE'),
+      cancelButtonText: this.translate.instant('COMMON.CANCEL'),
+      confirmButtonColor: '#ef4444',
+      cancelButtonColor: '#334155',
+      background: '#1e293b',
+      color: '#fff',
+      heightAuto: false
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.accountsService.deleteAccount(id).subscribe({
+          next: () => {
+            Swal.fire({
+              title: this.translate.instant('ACCOUNTS.DELETE_SUCCESS_TITLE'),
+              text: this.translate.instant('ACCOUNTS.DELETE_SUCCESS_TEXT'),
+              icon: 'success',
+              timer: 2000,
+              showConfirmButton: false,
+              background: '#1e293b',
+              color: '#fff',
+              heightAuto: false
+            });
+            this.loadAccounts();
+          },
+          error: (err) => {
+            console.error(err);
+            Swal.fire({
+              title: this.translate.instant('ACCOUNTS.DELETE_ERROR_TITLE'),
+              text: this.translate.instant('ACCOUNTS.DELETE_ERROR_TEXT'),
+              icon: 'error',
+              background: '#1e293b',
+              color: '#fff',
+              heightAuto: false
+            });
+          }
+        });
+      }
+    });
   }
 }

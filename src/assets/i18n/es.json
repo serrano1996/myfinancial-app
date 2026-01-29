@@ -67,6 +67,12 @@
         "ADD_BUTTON": "Agregar Cuenta",
         "EMPTY": "No se encontraron cuentas. ¡Crea una para comenzar!",
         "DELETE_CONFIRM": "¿Estás seguro de eliminar esta cuenta?",
+        "DELETE_CONFIRM_TITLE": "¿Estás seguro?",
+        "DELETE_CONFIRM_TEXT": "Esta acción no se puede deshacer.",
+        "DELETE_SUCCESS_TITLE": "¡Eliminada!",
+        "DELETE_SUCCESS_TEXT": "La cuenta ha sido eliminada.",
+        "DELETE_ERROR_TITLE": "¡Error!",
+        "DELETE_ERROR_TEXT": "No se pudo eliminar la cuenta.",
         "NO_ACTIVITY": "Sin actividad reciente",
         "MODAL": {
             "EDIT_TITLE": "Editar Cuenta",
