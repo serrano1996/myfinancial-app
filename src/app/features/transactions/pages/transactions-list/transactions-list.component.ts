@@ -7,10 +7,11 @@ import { AccountsService } from '../../../../core/services/accounts.service';
 import { CategoriesService } from '../../../../core/services/categories.service';
 import { TransactionFormModalComponent } from '../../components/transaction-form-modal/transaction-form-modal.component';
 import { CsvImportModalComponent } from '../../components/csv-import-modal/csv-import-modal.component';
-import { Tables, TablesInsert, TablesUpdate } from '../../../../types/supabase';
+import { Tables, TablesInsert } from '../../../../types/supabase';
 import { User } from '@supabase/supabase-js';
 import * as Papa from 'papaparse';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-transactions-list',
@@ -20,7 +21,8 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
   styleUrl: './transactions-list.component.css'
 })
 export class TransactionsListComponent implements OnInit {
-  transactions: any[] = []; // Using any to handle joined types easier in template or define interface interface TransactionWithDetails extends Tables<'transactions'> { accounts: ... }
+  transactions: any[] = [];
+  filteredTransactions: any[] = []; // Filtered list for display
   loading = true;
   user: User | null = null;
 
@@ -29,6 +31,8 @@ export class TransactionsListComponent implements OnInit {
   categoryId = '';
   startDate = '';
   endDate = '';
+  searchTerm = ''; // For local text search
+  showFilters = true;
 
   // Data for Filters & Modals
   accounts: Tables<'accounts'>[] = [];
@@ -58,6 +62,10 @@ export class TransactionsListComponent implements OnInit {
     });
   }
 
+  toggleFilters() {
+    this.showFilters = !this.showFilters;
+  }
+
   loadDependencies() {
     if (!this.user) return;
     this.accountsService.getAccounts(this.user.id).subscribe(data => this.accounts = data);
@@ -78,6 +86,7 @@ export class TransactionsListComponent implements OnInit {
     this.transactionsService.getTransactions(this.user.id, 0, 50, filters).subscribe({
       next: (response) => {
         this.transactions = response.data;
+        this.filterTransactionsLocal(); // Apply local search filter
         this.loading = false;
       },
       error: (err) => {
@@ -85,6 +94,21 @@ export class TransactionsListComponent implements OnInit {
         this.loading = false;
       }
     });
+  }
+
+  // Local filtering for search term
+  filterTransactionsLocal() {
+    if (!this.searchTerm) {
+      this.filteredTransactions = [...this.transactions];
+      return;
+    }
+
+    const term = this.searchTerm.toLowerCase();
+    this.filteredTransactions = this.transactions.filter(tx =>
+      (tx.description && tx.description.toLowerCase().includes(term)) ||
+      (tx.categories?.name && tx.categories.name.toLowerCase().includes(term)) ||
+      (tx.accounts?.name && tx.accounts.name.toLowerCase().includes(term))
+    );
   }
 
   openCreateModal() {
@@ -113,7 +137,7 @@ export class TransactionsListComponent implements OnInit {
   handleImport(file: File) {
     if (!this.user) return;
     this.modalLoading = true;
-    this.closeImportModal(); // Close modal immediately, show loading spinner somewhere else or generic
+    this.closeImportModal();
 
     Papa.parse(file, {
       header: true,
@@ -122,17 +146,11 @@ export class TransactionsListComponent implements OnInit {
         const rows = results.data as any[];
         const transactionsToInsert: TablesInsert<'transactions'>[] = [];
 
-        // Helper to find ID by name
         const findAccount = (name: string) => this.accounts.find(a => a.name.toLowerCase() === name?.toLowerCase());
         const findCategory = (name: string) => this.categories.find(c => c.name.toLowerCase() === name?.toLowerCase());
-
-        // Default Account/Category if not found? For now skip
         const defaultAccount = this.accounts[0];
 
         for (const row of rows) {
-          // Expected columns: Date, Amount, Description, Category, Account
-          // If Account column missing, use default.
-
           const account = findAccount(row['Account']) || defaultAccount;
           const category = findCategory(row['Category']);
 
@@ -149,16 +167,7 @@ export class TransactionsListComponent implements OnInit {
         }
 
         if (transactionsToInsert.length > 0) {
-          // Sequential insertion to allow trigger updating balance correctly? 
-          // Trigger works on each row insert, so batch insert should work fine too if trigger handles concurrency or we insert loop.
-          // Supabase batch insert.
-
-          // To be safe with triggers, loop? Or batch. Trigger is FOR EACH ROW.
-          // const { error } = await this.transactionsService.createTransaction(transactionsToInsert as any); // Type cast as service method assumes single, need to update service or loop
-
-          // Service method createTransaction takes single. I should add bulkCreate or loop.
-          // Loop for now.
-
+          // Ideally batch, but robust method loops
           for (const tx of transactionsToInsert) {
             await this.transactionsService.createTransaction(tx).toPromise();
           }
@@ -208,8 +217,48 @@ export class TransactionsListComponent implements OnInit {
 
   deleteTransaction(id: string, event: Event) {
     event.stopPropagation();
-    if (confirm(this.translate.instant('TRANSACTIONS.DELETE_CONFIRM'))) {
-      this.transactionsService.deleteTransaction(id).subscribe(() => this.loadTransactions());
-    }
+
+    Swal.fire({
+      title: this.translate.instant('TRANSACTIONS.DELETE_CONFIRM'), // Or create specific keys
+      text: this.translate.instant('COMMON.CONFIRM_DELETE'), // Using common or existing key
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: this.translate.instant('COMMON.DELETE'),
+      cancelButtonText: this.translate.instant('COMMON.CANCEL'),
+      confirmButtonColor: '#ef4444',
+      cancelButtonColor: '#334155',
+      background: '#1e293b',
+      color: '#fff',
+      heightAuto: false
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.transactionsService.deleteTransaction(id).subscribe({
+          next: () => {
+            Swal.fire({
+              title: this.translate.instant('COMMON.DELETE'),
+              text: this.translate.instant('TRANSACTIONS.DELETE_SUCCESS'),
+              icon: 'success',
+              timer: 2000,
+              showConfirmButton: false,
+              background: '#1e293b',
+              color: '#fff',
+              heightAuto: false
+            });
+            this.loadTransactions();
+          },
+          error: (err) => {
+            console.error(err);
+            Swal.fire({
+              title: this.translate.instant('COMMON.DELETE'),
+              text: this.translate.instant('TRANSACTIONS.DELETE_ERROR'),
+              icon: 'error',
+              background: '#1e293b',
+              color: '#fff',
+              heightAuto: false
+            });
+          }
+        });
+      }
+    });
   }
 }

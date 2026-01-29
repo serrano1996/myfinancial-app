@@ -135,6 +135,8 @@
         "FILTER_CATEGORIES": "Todas las Categorías",
         "EMPTY": "No se encontraron transacciones.",
         "DELETE_CONFIRM": "¿Eliminar transacción?",
+        "DELETE_SUCCESS": "Transacción eliminada correctamente",
+        "DELETE_ERROR": "No se pudo eliminar la transacción",
         "MODAL": {
             "EDIT_TITLE": "Editar Transacción",
             "NEW_TITLE": "Nueva Transacción",
@@ -144,9 +146,14 @@
             "SELECT_CATEGORY": "Seleccionar Categoría",
             "AMOUNT_LABEL": "Monto",
             "DATE_LABEL": "Fecha",
-            "DESCRIPTION_LABEL": "Descripción (Opcional)",
-            "DESCRIPTION_PLACEHOLDER": "Notas..."
+            "DESCRIPTION_LABEL": "Concepto",
+            "DESCRIPTION_PLACEHOLDER": "Ej: Compra semanal",
+            "NOTES_LABEL": "Notas",
+            "NOTES_PLACEHOLDER": "Detalles adicionales (opcional)"
         },
+        "SEARCH_PLACEHOLDER": "Buscar por descripción, categoría...",
+        "EMPTY_SUBTITLE": "Intenta ajustar los filtros o agrega una nueva transacción.",
+        "TOGGLE_FILTERS": "Filtros",
         "IMPORT_MODAL": {
             "TITLE": "Importar CSV",
             "INSTRUCTION": "Sube un archivo CSV para importar transacciones.",

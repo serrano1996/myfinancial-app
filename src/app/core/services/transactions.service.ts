@@ -25,6 +25,7 @@ export class TransactionsService {
       .from('transactions')
       .select('*, accounts(name), categories(name, type, icon, color)', { count: 'exact' })
       .eq('user_id', userId)
+      .is('deleted_at', null)
       .order('date', { ascending: false })
       .order('created_at', { ascending: false });
 
@@ -77,7 +78,7 @@ export class TransactionsService {
     return from(
       this.supabaseService.supabase
         .from('transactions')
-        .delete()
+        .update({ deleted_at: new Date().toISOString() } as any)
         .eq('id', id)
     );
   }

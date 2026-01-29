@@ -138,7 +138,10 @@ export type Database = {
                     created_at: string
                     date: string
                     description: string | null
+                    deleted_at: string | null
+                    notes: string | null
                     id: string
+                    type: Database["public"]["Enums"]["category_type"] | null
                     updated_at: string
                     user_id: string
                 }
@@ -149,7 +152,10 @@ export type Database = {
                     created_at?: string
                     date: string
                     description?: string | null
+                    deleted_at?: string | null
+                    notes?: string | null
                     id?: string
+                    type?: Database["public"]["Enums"]["category_type"] | null
                     updated_at?: string
                     user_id: string
                 }
@@ -160,7 +166,10 @@ export type Database = {
                     created_at?: string
                     date?: string
                     description?: string | null
+                    deleted_at?: string | null
+                    notes?: string | null
                     id?: string
+                    type?: Database["public"]["Enums"]["category_type"] | null
                     updated_at?: string
                     user_id?: string
                 }

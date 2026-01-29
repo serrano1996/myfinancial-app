@@ -135,6 +135,8 @@
         "FILTER_CATEGORIES": "All Categories",
         "EMPTY": "No transactions found.",
         "DELETE_CONFIRM": "Delete transaction?",
+        "DELETE_SUCCESS": "Transaction deleted successfully",
+        "DELETE_ERROR": "Could not delete transaction",
         "MODAL": {
             "EDIT_TITLE": "Edit Transaction",
             "NEW_TITLE": "New Transaction",
@@ -144,9 +146,12 @@
             "SELECT_CATEGORY": "Select Category",
             "AMOUNT_LABEL": "Amount",
             "DATE_LABEL": "Date",
-            "DESCRIPTION_LABEL": "Description (Optional)",
+            "DESCRIPTION_LABEL": "Notes...",
             "DESCRIPTION_PLACEHOLDER": "Notes..."
         },
+        "SEARCH_PLACEHOLDER": "Search by description, category...",
+        "EMPTY_SUBTITLE": "Try adjusting filters or add a new transaction.",
+        "TOGGLE_FILTERS": "Filters",
         "IMPORT_MODAL": {
             "TITLE": "Import CSV",
             "INSTRUCTION": "Upload a CSV file to import transactions.",
