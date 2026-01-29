@@ -8,12 +8,23 @@
         <form [formGroup]="form" (ngSubmit)="onSubmit()">
             <div class="modal-body">
 
+                <!-- Type Selector -->
+                <div class="form-group">
+                    <div class="type-selector">
+                        <button type="button" *ngFor="let type of transactionTypes" class="type-btn"
+                            [class.active]="form.get('type')?.value === type.value" (click)="setType(type.value)">
+                            <span class="type-icon">{{ type.icon }}</span>
+                            <span>{{ type.label | translate }}</span>
+                        </button>
+                    </div>
+                </div>
+
                 <div class="form-group">
                     <label>{{ 'TRANSACTIONS.MODAL.ACCOUNT_LABEL' | translate }}</label>
                     <select formControlName="account_id">
                         <!-- <option value="" disabled>{{ 'TRANSACTIONS.MODAL.SELECT_ACCOUNT' | translate }}</option> -->
                         <option *ngFor="let acc of accounts" [value]="acc.id">
-                            {{ acc.name }}
+                            {{ acc.icon }} {{ acc.name }}
                         </option>
                     </select>
                 </div>
@@ -22,9 +33,9 @@
                     <label>{{ 'TRANSACTIONS.MODAL.CATEGORY_LABEL' | translate }}</label>
                     <select formControlName="category_id">
                         <option value="" disabled>{{ 'TRANSACTIONS.MODAL.SELECT_CATEGORY' | translate }}</option>
-                        <ng-container *ngFor="let cat of categories">
+                        <ng-container *ngFor="let cat of filteredCategories">
                             <option [value]="cat.id">
-                                {{ cat.name }} ({{ ('CATEGORIES.MODAL.TYPES.' + (cat.type | uppercase)) | translate }})
+                                {{ cat.icon }} {{ cat.name }}
                             </option>
                         </ng-container>
                     </select>
@@ -45,6 +56,12 @@
                     <label>{{ 'TRANSACTIONS.MODAL.DESCRIPTION_LABEL' | translate }}</label>
                     <input type="text" formControlName="description"
                         placeholder="{{ 'TRANSACTIONS.MODAL.DESCRIPTION_PLACEHOLDER' | translate }}">
+                </div>
+
+                <div class="form-group">
+                    <label>{{ 'TRANSACTIONS.MODAL.NOTES_LABEL' | translate }}</label>
+                    <textarea formControlName="notes" rows="3"
+                        placeholder="{{ 'TRANSACTIONS.MODAL.NOTES_PLACEHOLDER' | translate }}"></textarea>
                 </div>
 
             </div>

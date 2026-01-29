@@ -79,73 +79,32 @@
     color: var(--text-primary);
 }
 
-/* Transaction Summary Styles */
-.transaction-summary {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    /* padding-top: 0.5rem; handled by divider margin */
-}
-
-.summary-divider {
-    height: 1px;
-    background-color: var(--border-color);
-    /* Need to ensure this var exists, or use #eee */
-    margin: 0 -1.5rem 0.5rem -1.5rem;
-    /* Extend to edges */
-    opacity: 0.5;
-}
-
-.mini-transaction {
+/* Transaction Count Styles */
+.transaction-count {
+    padding-top: 1rem;
+    padding-bottom: 0.5rem;
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    font-size: 0.85rem;
-    padding: 0.25rem 0;
-}
-
-.tx-date {
-    color: var(--text-secondary);
-    font-size: 0.75rem;
-    min-width: 45px;
-}
-
-.tx-icon {
-    font-size: 1rem;
-    width: 20px;
-    text-align: center;
-}
-
-.tx-desc {
-    flex: 1;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    color: var(--text-primary);
-}
-
-.tx-amount {
-    font-weight: 600;
-    font-size: 0.85rem;
-}
-
-.tx-amount.expense {
-    color: #ef4444;
-    /* Red-500 */
-}
-
-.tx-amount.income {
-    color: #22c55e;
-    /* Green-500 */
-}
-
-.transaction-summary-empty {
-    padding-top: 1rem;
-    margin-top: 0.5rem;
-    text-align: center;
+    gap: 0.5rem;
     border-top: 1px dashed var(--border-color);
-    opacity: 0.7;
+    margin-top: 0.5rem;
 }
+
+.count-number {
+    font-weight: 700;
+    color: var(--text-primary);
+    background: rgba(var(--primary-rgb), 0.1);
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.9rem;
+}
+
+.count-label {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+/* Removed old transaction summary styles */
 
 .empty-text {
     font-size: 0.75rem;

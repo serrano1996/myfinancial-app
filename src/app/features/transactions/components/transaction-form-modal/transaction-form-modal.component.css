@@ -1,4 +1,4 @@
-/* Reuse Styles */
+/* Reuse Styles from Account Modal for consistency */
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -12,6 +12,7 @@
     align-items: center;
     justify-content: center;
     padding: 1rem;
+    animation: fadeIn 0.3s ease-out;
 }
 
 .modal-container {
@@ -21,18 +22,32 @@
     max-width: 500px;
     box-shadow: var(--shadow-lg);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    animation: modalScale 0.3s ease-out;
+    animation: modalScale 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh;
+    /* Prevent overflow on small screens */
 }
 
 @keyframes modalScale {
     from {
         opacity: 0;
-        transform: scale(0.95);
+        transform: scale(0.95) translateY(10px);
     }
 
     to {
         opacity: 1;
-        transform: scale(1);
+        transform: scale(1) translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
     }
 }
 
@@ -44,26 +59,49 @@
     align-items: center;
 }
 
+/* Ensure the form takes up the remaining space and manages its own layout */
+form {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: hidden;
+    /* Prevent form itself from overflowing, enforce inner scrolling */
+    min-height: 0;
+    /* Crucial for nested flex scrolling */
+}
+
 .modal-header h2 {
     font-size: 1.25rem;
     margin: 0;
+    font-weight: 600;
+    /* Removed gradient to match category modal */
 }
 
 .close-btn {
     background: transparent;
     border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
     font-size: 1.5rem;
     color: var(--text-muted);
     cursor: pointer;
     line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
 }
 
 .close-btn:hover {
     color: white;
+    background: rgba(255, 255, 255, 0.1);
+    transform: rotate(90deg);
 }
 
 .modal-body {
     padding: 1.5rem;
+    overflow-y: auto;
 }
 
 .modal-footer {
@@ -72,6 +110,9 @@
     display: flex;
     justify-content: flex-end;
     gap: 1rem;
+    background: rgba(0, 0, 0, 0.1);
+    border-bottom-left-radius: var(--radius-md);
+    border-bottom-right-radius: var(--radius-md);
 }
 
 .form-group {
@@ -83,23 +124,54 @@
     margin-bottom: 0.5rem;
     color: var(--text-muted);
     font-size: 0.875rem;
+    font-weight: 500;
 }
 
 input,
-select {
+select,
+textarea {
     width: 100%;
-    padding: 0.75rem;
-    border-radius: var(--radius-sm);
+    padding: 0.875rem 1rem;
+    border-radius: 12px;
     background: rgba(15, 23, 42, 0.6);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     color: white;
-    font-size: 1rem;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+    font-family: inherit;
+    /* Ensure font matches */
+}
+
+textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1.25em;
+    padding-right: 2.5rem;
+    cursor: pointer;
+}
+
+select option {
+    background-color: #1e293b;
+    color: white;
+    padding: 10px;
 }
 
 input:focus,
-select:focus {
+select:focus,
+textarea:focus {
     outline: none;
     border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+    background: rgba(15, 23, 42, 0.8);
 }
 
 .grid-2 {
@@ -112,11 +184,189 @@ select:focus {
     background: transparent;
     color: var(--text-muted);
     border: none;
-    padding: 0.75rem 1rem;
+    padding: 0.75rem 1.5rem;
     font-weight: 500;
     cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.2s;
 }
 
 .btn-text:hover {
     color: white;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
+}
+
+.btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 12px rgba(37, 99, 235, 0.3);
+}
+
+.btn-primary:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Type Selector Styling */
+.type-selector {
+    display: flex;
+    background: rgba(15, 23, 42, 0.6);
+    border-radius: 12px;
+    padding: 0.25rem;
+    gap: 0.25rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.type-btn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    padding: 0.65rem;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 500;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.type-btn:hover {
+    color: white;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.type-btn.active {
+    background: rgba(59, 130, 246, 0.15);
+    color: white;
+    font-weight: 600;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Specific colors for active states if desired */
+.type-btn:nth-child(1).active {
+    /* Expense */
+    background: rgba(239, 68, 68, 0.15);
+    color: #f87171;
+}
+
+.type-btn:nth-child(2).active {
+    /* Income */
+    background: rgba(34, 197, 94, 0.15);
+    color: #4ade80;
+}
+
+.type-btn:nth-child(3).active {
+    /* Transfer */
+    background: rgba(59, 130, 246, 0.15);
+    color: #60a5fa;
+}
+
+.type-icon {
+    font-size: 1.25rem;
+    line-height: 1;
+    margin-bottom: 2px;
+}
+
+
+/* Mobile Responsiveness */
+@media (max-width: 600px) {
+    .modal-overlay {
+        padding: 0;
+        align-items: flex-end;
+    }
+
+    .modal-container {
+        border-radius: 0;
+        height: 100%;
+        max-height: 100%;
+        width: 100%;
+        animation: slideUpModal 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        border: none;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Target the form to make it a flex container on mobile too */
+    .modal-container form {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        overflow: hidden;
+        min-height: 0;
+    }
+
+    .modal-header {
+        flex-shrink: 0;
+        /* Header stays fixed */
+        padding: 1.25rem 1.5rem;
+    }
+
+    .modal-body {
+        flex: 1;
+        /* Body takes remaining space and scrolls */
+        overflow-y: auto;
+        padding: 1.5rem;
+        padding-bottom: 2rem;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Stack the 2-column grid on mobile */
+    .grid-2 {
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+    }
+
+    .type-selector {
+        margin-bottom: 0.5rem;
+    }
+
+    .type-btn {
+        padding: 0.875rem 0.5rem;
+        /* Larger touch targets */
+    }
+
+    @keyframes slideUpModal {
+        from {
+            transform: translateY(100%);
+        }
+
+        to {
+            transform: translateY(0);
+        }
+    }
+
+    .modal-footer {
+        flex-shrink: 0;
+        /* Footer stays fixed */
+        padding: 1.25rem 1.5rem;
+        padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
+        background: #1e293b;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        z-index: 10;
+        justify-content: space-between;
+    }
+
+    .modal-footer button {
+        flex: 1;
+        justify-content: center;
+    }
 }

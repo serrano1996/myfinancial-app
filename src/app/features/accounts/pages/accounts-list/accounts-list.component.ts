@@ -11,19 +11,7 @@ import Swal from 'sweetalert2';
 import { TransactionsService } from '../../../../core/services/transactions.service';
 
 interface AccountWithTransactions extends Tables<'accounts'> {
-  recentTransactions?: {
-    id: string;
-    description?: string | null; // Optional if you rely on category name
-    amount: number;
-    date: string;
-    // We get a joined object from Supabase, usually has categories: { icon, color, ... }
-    categories?: {
-      name: string;
-      icon: string;
-      color: string;
-      type: string;
-    } | null;
-  }[];
+  transactionCount?: number;
 }
 
 @Component({
@@ -67,12 +55,12 @@ export class AccountsListComponent implements OnInit {
         this.accounts = data; // Assign base accounts data
         this.loading = false;
 
-        // Fetch recent transactions for each account
+        // Fetch transaction count for each account
         this.accounts.forEach(acc => {
           if (!this.user) return; // Safety check
-          this.transactionsService.getTransactions(this.user.id, 0, 3, { accountId: acc.id })
+          this.transactionsService.getTransactions(this.user.id, 0, 1, { accountId: acc.id })
             .subscribe(res => {
-              acc.recentTransactions = res.data;
+              acc.transactionCount = res.count;
             });
         });
       },

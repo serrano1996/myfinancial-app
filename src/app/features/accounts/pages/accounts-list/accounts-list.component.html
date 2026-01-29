@@ -33,28 +33,10 @@
                 </div>
             </div>
 
-            <!-- Transaction Summary -->
-            <div class="transaction-summary"
-                *ngIf="account.recentTransactions && account.recentTransactions.length > 0">
-                <div class="summary-divider"></div>
-                <div class="mini-transaction" *ngFor="let tx of account.recentTransactions">
-                    <div class="tx-date">{{ tx.date | date:'dd MMM' }}</div>
-                    <div class="tx-icon" [style.color]="tx.categories?.color || '#ccc'">
-                        {{ tx.categories?.icon || '📄' }}
-                    </div>
-                    <!-- Use standard description or category name as fallback -->
-                    <div class="tx-desc text-truncate">{{ tx.description || tx.categories?.name || 'Transaction' }}
-                    </div>
-                    <div class="tx-amount" [class.expense]="tx.categories?.type === 'expense'"
-                        [class.income]="tx.categories?.type === 'income'">
-                        {{ tx.categories?.type === 'expense' ? '-' : '+' }}{{ tx.amount |
-                        currency:'EUR':'symbol':'1.0-0' }}
-                    </div>
-                </div>
-            </div>
-
-            <div class="transaction-summary-empty" *ngIf="!account.recentTransactions?.length">
-                <p class="empty-text">{{ 'ACCOUNTS.NO_ACTIVITY' | translate }}</p>
+            <!-- Transaction Count -->
+            <div class="transaction-count">
+                <span class="count-number">{{ account.transactionCount || 0 }}</span>
+                <span class="count-label">{{ 'TRANSACTIONS.TITLE' | translate }}</span>
             </div>
 
             <div class="card-actions">
