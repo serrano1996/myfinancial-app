@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import Swal from 'sweetalert2';
 import { CommonModule } from '@angular/common';
-import { forkJoin, of, Observable } from 'rxjs';
+import { forkJoin, of, Observable, distinctUntilChanged, finalize, timeout } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { AuthService } from '../../../../core/services/auth.service';
 import { CategoriesService } from '../../../../core/services/categories.service';
@@ -41,14 +41,19 @@ export class CategoriesListComponent implements OnInit {
   constructor(
     private categoriesService: CategoriesService,
     private authService: AuthService,
-    public translate: TranslateService
+    public translate: TranslateService,
+    private cdr: ChangeDetectorRef
   ) { }
 
   ngOnInit() {
-    this.authService.user$.subscribe(user => {
-      this.user = user;
+    this.authService.user$.pipe(
+      distinctUntilChanged((prev: User | null | undefined, curr: User | null | undefined) => prev?.id === curr?.id)
+    ).subscribe(user => {
+      this.user = user ?? null;
       if (user) {
         this.loadCategories();
+      } else {
+        this.loading = false;
       }
     });
   }
@@ -56,17 +61,23 @@ export class CategoriesListComponent implements OnInit {
   loadCategories() {
     if (!this.user) return;
     this.loading = true;
-    this.categoriesService.getCategories(this.user.id).subscribe({
-      next: (data) => {
-        this.categories = data;
-        this.buildTree();
-        this.loading = false;
-      },
-      error: (err) => {
-        console.error(err);
-        this.loading = false;
-      }
-    });
+    this.categoriesService.getCategories(this.user.id)
+      .pipe(
+        timeout(15000),
+        finalize(() => {
+          this.loading = false;
+          this.cdr.detectChanges();
+        })
+      )
+      .subscribe({
+        next: (data) => {
+          this.categories = data;
+          this.buildTree();
+        },
+        error: (err) => {
+          console.error(err);
+        }
+      });
   }
 
   buildTree() {

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import { SupabaseService } from './supabase.service';
 import { AuthSession, User, Provider, Session, UserAttributes } from '@supabase/supabase-js';
 import { BehaviorSubject, Observable } from 'rxjs';
@@ -10,31 +10,28 @@ export class AuthService {
   private _session = new BehaviorSubject<Session | null | undefined>(undefined);
   private _user = new BehaviorSubject<User | null>(null);
 
-  constructor(private supabaseService: SupabaseService) {
+  constructor(private supabaseService: SupabaseService, private ngZone: NgZone) {
     this.loadSession();
     this.supabaseService.supabase.auth.onAuthStateChange((event, session) => {
-      // Check for 24-hour explicit expiry
-      if (session) {
-        const lastSignIn = new Date(session.user.last_sign_in_at || session.access_token.split('.')[1] ? 0 : Date.now()).getTime(); // Fallback if needed, but last_sign_in_at should be there
-        // Actually, simpler usage: check issued_at (iat) or similar, but let's use last_sign_in_at if available
-        // Better approach: check local timestamp if stored, or just rely on session.expires_at (which is token expiry)
-        // For "1 day max login session", we need to check if the session started > 24h ago.
+      this.ngZone.run(() => {
+        // Check for 24-hour explicit expiry
+        if (session) {
+          const lastSignIn = new Date(session.user.last_sign_in_at || session.access_token.split('.')[1] ? 0 : Date.now()).getTime();
 
-        // Supabase sessions refresh, so expires_at moves forward.
-        // We will check user.last_sign_in_at.
-        const signInTime = new Date(session.user.last_sign_in_at ?? '').getTime();
-        const oneDayMs = 24 * 60 * 60 * 1000;
-        const now = Date.now();
+          const signInTime = new Date(session.user.last_sign_in_at ?? '').getTime();
+          const oneDayMs = 24 * 60 * 60 * 1000;
+          const now = Date.now();
 
-        if (signInTime && (now - signInTime > oneDayMs)) {
-          console.log('Session expired (24h limit). Logging out.');
-          this.signOut();
-          return;
+          if (signInTime && (now - signInTime > oneDayMs)) {
+            console.log('Session expired (24h limit). Logging out.');
+            this.signOut();
+            return;
+          }
         }
-      }
 
-      this._session.next(session);
-      this._user.next(session?.user ?? null);
+        this._session.next(session);
+        this._user.next(session?.user ?? null);
+      });
     });
   }
 

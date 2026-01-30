@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../../../core/services/auth.service';
@@ -11,6 +11,7 @@ import { Tables, TablesInsert } from '../../../../types/supabase';
 import { User } from '@supabase/supabase-js';
 import * as Papa from 'papaparse';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { distinctUntilChanged, finalize, timeout } from 'rxjs';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -49,18 +50,24 @@ export class TransactionsListComponent implements OnInit {
     private accountsService: AccountsService,
     private categoriesService: CategoriesService,
     private authService: AuthService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private cdr: ChangeDetectorRef
   ) { }
 
   ngOnInit() {
-    this.authService.user$.subscribe(user => {
-      this.user = user;
+    this.authService.user$.pipe(
+      distinctUntilChanged((prev: User | null | undefined, curr: User | null | undefined) => prev?.id === curr?.id)
+    ).subscribe((user: User | null | undefined) => {
+      this.user = user ?? null;
       if (user) {
         this.loadDependencies();
         this.loadTransactions();
+      } else {
+        this.loading = false;
       }
     });
   }
+
 
   toggleFilters() {
     this.showFilters = !this.showFilters;
@@ -83,21 +90,31 @@ export class TransactionsListComponent implements OnInit {
       endDate: this.endDate || undefined
     };
 
-    this.transactionsService.getTransactions(this.user.id, 0, 50, filters).subscribe({
-      next: (response) => {
-        this.transactions = response.data;
-        this.filterTransactionsLocal(); // Apply local search filter
-        this.loading = false;
-      },
-      error: (err) => {
-        console.error(err);
-        this.loading = false;
-      }
-    });
+    this.transactionsService.getTransactions(this.user.id, 0, 50, filters)
+      .pipe(
+        timeout(15000),
+        finalize(() => {
+          this.loading = false;
+          this.cdr.detectChanges(); // Force update
+        })
+      )
+      .subscribe({
+        next: (response: any) => {
+          this.transactions = response.data;
+          this.filterTransactionsLocal(); // Apply local search filter
+        },
+        error: (err) => {
+          console.error(err);
+        }
+      });
   }
 
   // Local filtering for search term
   filterTransactionsLocal() {
+    if (!this.transactions) {
+      this.filteredTransactions = [];
+      return;
+    }
     if (!this.searchTerm) {
       this.filteredTransactions = [...this.transactions];
       return;

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { AuthService } from './core/services/auth.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -17,7 +17,7 @@ export class AppComponent {
 
   isInitialized = false;
 
-  constructor(private translate: TranslateService, private authService: AuthService) {
+  constructor(private translate: TranslateService, private authService: AuthService, private cdr: ChangeDetectorRef) {
     this.translate.setDefaultLang('es');
     this.translate.use('es');
 
@@ -25,6 +25,7 @@ export class AppComponent {
     this.authService.session$.subscribe((session: Session | null | undefined) => {
       if (session !== undefined) {
         this.isInitialized = true;
+        this.cdr.detectChanges();
       }
     });
   }

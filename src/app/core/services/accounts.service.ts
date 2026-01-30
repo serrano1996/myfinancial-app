@@ -14,12 +14,12 @@ export class AccountsService {
     return from(
       this.supabaseService.supabase
         .from('accounts')
-        .select('*')
+        .select('id, name, icon, color')
         .eq('user_id', userId)
         .is('deleted_at', null)
         .order('name')
     ).pipe(
-      map(response => response.data || [])
+      map(response => (response.data || []) as any[])
     );
   }
 

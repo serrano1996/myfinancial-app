@@ -1,7 +1,8 @@
 const fs = require('fs');
+require('dotenv').config();
 
 const envConfigFile = `export const environment = {
-  production: true,
+  production: false,
   supabaseUrl: '${process.env.SUPABASE_URL}',
   supabaseKey: '${process.env.SUPABASE_KEY}'
 };

@@ -14,12 +14,12 @@ export class CategoriesService {
     return from(
       this.supabaseService.supabase
         .from('categories')
-        .select('*')
+        .select('id, name, icon, color, type, parent_id')
         .eq('user_id', userId)
         .is('deleted_at', null)
         .order('name')
     ).pipe(
-      map(response => response.data || [])
+      map(response => (response.data || []) as any[])
     );
   }
 

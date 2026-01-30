@@ -23,7 +23,7 @@ export class TransactionsService {
   ): Observable<{ data: Tables<'transactions'>[], count: number }> {
     let query = this.supabaseService.supabase
       .from('transactions')
-      .select('*, accounts(name), categories(name, type, icon, color)', { count: 'exact' })
+      .select('id, date, amount, description, type, category_id, account_id, accounts(name), categories(name, type, icon, color)', { count: 'exact' })
       .eq('user_id', userId)
       .is('deleted_at', null)
       .order('date', { ascending: false })
@@ -47,7 +47,7 @@ export class TransactionsService {
 
     return from(query.range(from_, to)).pipe(
       map(response => ({
-        data: response.data || [],
+        data: (response.data || []) as any[],
         count: response.count || 0
       }))
     );

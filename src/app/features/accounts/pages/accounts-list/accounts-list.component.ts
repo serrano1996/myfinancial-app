@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../../core/services/auth.service';
 import { AccountsService } from '../../../../core/services/accounts.service';
@@ -8,6 +8,7 @@ import { User } from '@supabase/supabase-js';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import Swal from 'sweetalert2';
 
+import { distinctUntilChanged, finalize, timeout } from 'rxjs';
 import { TransactionsService } from '../../../../core/services/transactions.service';
 
 interface AccountWithTransactions extends Tables<'accounts'> {
@@ -35,12 +36,15 @@ export class AccountsListComponent implements OnInit {
     private accountsService: AccountsService,
     private transactionsService: TransactionsService, // Inject TransactionService
     private authService: AuthService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private cdr: ChangeDetectorRef
   ) { }
 
   ngOnInit() {
-    this.authService.user$.subscribe(user => {
-      this.user = user;
+    this.authService.user$.pipe(
+      distinctUntilChanged((prev: User | null | undefined, curr: User | null | undefined) => prev?.id === curr?.id)
+    ).subscribe(user => {
+      this.user = user ?? null;
       if (user) {
         this.loadAccounts();
       }
@@ -50,25 +54,31 @@ export class AccountsListComponent implements OnInit {
   loadAccounts() {
     if (!this.user) return;
     this.loading = true;
-    this.accountsService.getAccounts(this.user.id).subscribe({
-      next: (data) => {
-        this.accounts = data; // Assign base accounts data
-        this.loading = false;
+    this.accountsService.getAccounts(this.user.id)
+      .pipe(
+        timeout(15000),
+        finalize(() => {
+          this.loading = false;
+          this.cdr.detectChanges();
+        })
+      )
+      .subscribe({
+        next: (data) => {
+          this.accounts = data; // Assign base accounts data
 
-        // Fetch transaction count for each account
-        this.accounts.forEach(acc => {
-          if (!this.user) return; // Safety check
-          this.transactionsService.getTransactions(this.user.id, 0, 1, { accountId: acc.id })
-            .subscribe(res => {
-              acc.transactionCount = res.count;
-            });
-        });
-      },
-      error: (err) => {
-        console.error(err);
-        this.loading = false;
-      }
-    });
+          // Fetch transaction count for each account
+          this.accounts.forEach(acc => {
+            if (!this.user) return; // Safety check
+            this.transactionsService.getTransactions(this.user.id, 0, 1, { accountId: acc.id })
+              .subscribe(res => {
+                acc.transactionCount = res.count;
+              });
+          });
+        },
+        error: (err) => {
+          console.error(err);
+        }
+      });
   }
 
   openCreateModal() {
