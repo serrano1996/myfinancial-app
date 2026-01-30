@@ -102,6 +102,7 @@ form {
 .modal-body {
     padding: 1.5rem;
     overflow-y: auto;
+    max-height: calc(90vh - 200px);
 }
 
 .modal-footer {
@@ -113,6 +114,24 @@ form {
     background: rgba(0, 0, 0, 0.1);
     border-bottom-left-radius: var(--radius-md);
     border-bottom-right-radius: var(--radius-md);
+}
+
+/* Modal Body Scrollbar */
+.modal-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+.modal-body::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 99px;
+}
+
+.modal-body::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(255, 255, 255, 0.2);
 }
 
 .form-group {
@@ -297,6 +316,7 @@ textarea:focus {
     .modal-container {
         border-radius: 0;
         height: 100%;
+        min-height: 100vh;
         max-height: 100%;
         width: 100%;
         animation: slideUpModal 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
