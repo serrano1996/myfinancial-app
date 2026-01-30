@@ -446,6 +446,8 @@ select:focus {
         /* Grow and shrink */
         overflow-y: auto;
         padding: 1rem;
+        padding-bottom: 5rem;
+        /* Space for fixed footer */
         min-height: 0;
         /* Crucial for scrolling in nested flex */
         -webkit-overflow-scrolling: touch;
@@ -453,10 +455,17 @@ select:focus {
     }
 
     .modal-footer {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
         flex-shrink: 0;
         padding: 1rem;
         padding-bottom: max(1rem, env(safe-area-inset-bottom));
         /* Safe area for iOS */
+        background: #1e293b;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        z-index: 10;
     }
 
     /* Larger touch targets */
