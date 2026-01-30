@@ -45,3 +45,23 @@ Thumbs.db
 src/environments/environment.ts
 src/environments/environment.development.ts
 .env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+pnpm-debug.log*
+
+# Build errors and install logs
+build_errors.log
+install.log
+
+# Sensitive files
+*.pem
+*.key
+secrets.json
+credentials.json
