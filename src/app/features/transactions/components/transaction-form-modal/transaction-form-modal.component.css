@@ -345,8 +345,6 @@ textarea:focus {
         /* Body takes remaining space and scrolls */
         overflow-y: auto;
         padding: 1.5rem;
-        padding-bottom: 5rem;
-        /* Space for fixed footer */
         -webkit-overflow-scrolling: touch;
     }
 
@@ -376,17 +374,12 @@ textarea:focus {
     }
 
     .modal-footer {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
         flex-shrink: 0;
         /* Footer stays fixed */
         padding: 1.25rem 1.5rem;
         padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
         background: #1e293b;
         border-top: 1px solid rgba(255, 255, 255, 0.05);
-        z-index: 10;
         justify-content: space-between;
     }
 
