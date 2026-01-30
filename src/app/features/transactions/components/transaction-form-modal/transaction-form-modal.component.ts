@@ -34,12 +34,39 @@ export class TransactionFormModalComponent implements OnChanges {
     this.form = this.fb.group({
       type: ['expense'], // Default to expense
       account_id: ['', Validators.required],
+      destination_account_id: [''], // For transfers
       category_id: ['', Validators.required],
       amount: [null, [Validators.required, Validators.min(0.01)]],
       date: [today, Validators.required],
       description: ['', Validators.required],
       notes: ['']
     });
+
+    // Watch for type changes to update validation
+    this.form.get('type')?.valueChanges.subscribe(type => {
+      this.updateValidation(type);
+    });
+  }
+
+  get filteredDestinationAccounts(): Tables<'accounts'>[] {
+    const sourceAccountId = this.form.get('account_id')?.value;
+    return this.accounts.filter(acc => acc.id !== sourceAccountId);
+  }
+
+  updateValidation(type: string) {
+    const destControl = this.form.get('destination_account_id');
+    const categoryControl = this.form.get('category_id');
+
+    if (type === 'transfer') {
+      destControl?.setValidators([Validators.required]);
+      categoryControl?.clearValidators();
+    } else {
+      destControl?.clearValidators();
+      categoryControl?.setValidators([Validators.required]);
+    }
+
+    destControl?.updateValueAndValidity();
+    categoryControl?.updateValueAndValidity();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -98,6 +125,7 @@ export class TransactionFormModalComponent implements OnChanges {
   setType(type: string) {
     this.form.patchValue({ type });
     this.filterCategories();
+    this.updateValidation(type);
   }
 
   onSubmit() {

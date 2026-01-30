@@ -29,7 +29,18 @@
                     </select>
                 </div>
 
-                <div class="form-group">
+                <!-- Destination Account (for transfers only) -->
+                <div class="form-group" *ngIf="form.get('type')?.value === 'transfer'">
+                    <label>{{ 'TRANSACTIONS.MODAL.DESTINATION_ACCOUNT_LABEL' | translate }}</label>
+                    <select formControlName="destination_account_id">
+                        <option value="" disabled>{{ 'TRANSACTIONS.MODAL.SELECT_DESTINATION_ACCOUNT' | translate }}</option>
+                        <option *ngFor="let acc of filteredDestinationAccounts" [value]="acc.id">
+                            {{ acc.icon }} {{ acc.name }}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-group" *ngIf="form.get('type')?.value !== 'transfer'">
                     <label>{{ 'TRANSACTIONS.MODAL.CATEGORY_LABEL' | translate }}</label>
                     <select formControlName="category_id">
                         <option value="" disabled>{{ 'TRANSACTIONS.MODAL.SELECT_CATEGORY' | translate }}</option>
