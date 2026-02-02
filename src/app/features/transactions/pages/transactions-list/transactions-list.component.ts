@@ -208,36 +208,148 @@ export class TransactionsListComponent implements OnInit {
     this.modalLoading = true;
 
     if (this.editingTransaction) {
-      this.transactionsService.updateTransaction(this.editingTransaction.id, formData).subscribe({
-        next: () => {
-          this.loadTransactions();
-          this.closeModal();
-          this.modalLoading = false;
-        },
-        error: () => this.modalLoading = false
-      });
+      // Check if it's a transfer to update both linked transactions
+      if (this.editingTransaction.type === 'transfer') {
+        const { destination_account_id, ...transactionData } = formData;
+
+        // Update the current transaction
+        this.transactionsService.updateTransaction(this.editingTransaction.id, transactionData).subscribe({
+          next: () => {
+            // Find and update the linked transaction
+            const linkedTx = this.findLinkedTransferTransaction(this.editingTransaction);
+            if (linkedTx) {
+              // Update linked transaction with same changes (except account-specific fields)
+              const linkedUpdate = {
+                description: transactionData.description,
+                date: transactionData.date,
+                category_id: transactionData.category_id,
+                type: 'transfer' as const,
+                // Keep the linked transaction's amount and account_id
+                amount: linkedTx.amount,
+                account_id: linkedTx.account_id,
+                // Update notes to reflect any description changes
+                notes: linkedTx.notes
+              };
+
+              this.transactionsService.updateTransaction(linkedTx.id, linkedUpdate).subscribe({
+                next: () => {
+                  this.loadTransactions();
+                  this.closeModal();
+                  this.modalLoading = false;
+                },
+                error: (err) => {
+                  console.error('Error updating linked transfer:', err);
+                  // Show success anyway since main transaction was updated
+                  this.loadTransactions();
+                  this.closeModal();
+                  this.modalLoading = false;
+                }
+              });
+            } else {
+              this.loadTransactions();
+              this.closeModal();
+              this.modalLoading = false;
+            }
+          },
+          error: () => this.modalLoading = false
+        });
+      } else {
+        // Regular transaction (income or expense) - not a transfer
+        const { destination_account_id, ...transactionData } = formData;
+
+        this.transactionsService.updateTransaction(this.editingTransaction.id, transactionData).subscribe({
+          next: () => {
+            this.loadTransactions();
+            this.closeModal();
+            this.modalLoading = false;
+          },
+          error: () => this.modalLoading = false
+        });
+      }
     } else {
-      const newTx: TablesInsert<'transactions'> = {
-        user_id: this.user.id,
-        ...formData
-      };
-      this.transactionsService.createTransaction(newTx).subscribe({
-        next: () => {
-          this.loadTransactions();
-          this.closeModal();
-          this.modalLoading = false;
-        },
-        error: () => this.modalLoading = false
-      });
+      // Check if it's a transfer to create two linked transactions
+      if (formData.type === 'transfer' && formData.destination_account_id) {
+        // Get account names for notes
+        const sourceAccount = this.accounts.find(a => a.id === formData.account_id);
+        const destAccount = this.accounts.find(a => a.id === formData.destination_account_id);
+
+        // Create outgoing transaction (from source account)
+        const outgoingTx: TablesInsert<'transactions'> = {
+          user_id: this.user.id,
+          account_id: formData.account_id,
+          amount: Math.abs(formData.amount), // Store as positive, display handles sign
+          date: formData.date,
+          description: formData.description,
+          type: 'transfer',
+          category_id: formData.category_id,
+          notes: `${formData.notes ? formData.notes + '\n' : ''}Transfer to ${destAccount?.name || 'Unknown account'}`
+        };
+
+        // Create incoming transaction (to destination account)
+        const incomingTx: TablesInsert<'transactions'> = {
+          user_id: this.user.id,
+          account_id: formData.destination_account_id,
+          amount: Math.abs(formData.amount), // Store as positive, display handles sign
+          date: formData.date,
+          description: formData.description,
+          type: 'transfer',
+          category_id: formData.category_id,
+          notes: `${formData.notes ? formData.notes + '\n' : ''}Transfer from ${sourceAccount?.name || 'Unknown account'}`
+        };
+
+        // Create both transactions
+        this.transactionsService.createTransaction(outgoingTx).subscribe({
+          next: () => {
+            // First transaction created, now create the second
+            this.transactionsService.createTransaction(incomingTx).subscribe({
+              next: () => {
+                this.loadTransactions();
+                this.closeModal();
+                this.modalLoading = false;
+              },
+              error: (err) => {
+                console.error('Error creating incoming transfer transaction:', err);
+                this.modalLoading = false;
+              }
+            });
+          },
+          error: (err) => {
+            console.error('Error creating outgoing transfer transaction:', err);
+            this.modalLoading = false;
+          }
+        });
+      } else {
+        // Regular transaction (income or expense)
+        const { destination_account_id, ...transactionData } = formData;
+
+        const newTx: TablesInsert<'transactions'> = {
+          user_id: this.user.id,
+          ...transactionData
+        };
+        this.transactionsService.createTransaction(newTx).subscribe({
+          next: () => {
+            this.loadTransactions();
+            this.closeModal();
+            this.modalLoading = false;
+          },
+          error: () => this.modalLoading = false
+        });
+      }
     }
   }
 
   deleteTransaction(id: string, event: Event) {
     event.stopPropagation();
 
+    // Find the transaction being deleted
+    const transaction = this.transactions.find(t => t.id === id);
+    const isTransfer = transaction?.type === 'transfer';
+
     Swal.fire({
-      title: this.translate.instant('TRANSACTIONS.DELETE_CONFIRM'), // Or create specific keys
-      text: this.translate.instant('COMMON.CONFIRM_DELETE'), // Using common or existing key
+      title: this.translate.instant('TRANSACTIONS.DELETE_CONFIRM'),
+      text: isTransfer
+        ? 'This is a transfer. Both linked transactions will be deleted.'
+        : this.translate.instant('COMMON.CONFIRM_DELETE'),
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: this.translate.instant('COMMON.DELETE'),
@@ -249,19 +361,32 @@ export class TransactionsListComponent implements OnInit {
       heightAuto: false
     }).then((result) => {
       if (result.isConfirmed) {
+        // Delete the main transaction
         this.transactionsService.deleteTransaction(id).subscribe({
           next: () => {
-            Swal.fire({
-              title: this.translate.instant('COMMON.DELETE'),
-              text: this.translate.instant('TRANSACTIONS.DELETE_SUCCESS'),
-              icon: 'success',
-              timer: 2000,
-              showConfirmButton: false,
-              background: '#1e293b',
-              color: '#fff',
-              heightAuto: false
-            });
-            this.loadTransactions();
+            // If it's a transfer, find and delete the linked transaction
+            if (isTransfer && transaction) {
+              const linkedTx = this.findLinkedTransferTransaction(transaction);
+              if (linkedTx) {
+                this.transactionsService.deleteTransaction(linkedTx.id).subscribe({
+                  next: () => {
+                    this.showDeleteSuccessMessage();
+                    this.loadTransactions();
+                  },
+                  error: (err) => {
+                    console.error('Error deleting linked transfer transaction:', err);
+                    this.showDeleteSuccessMessage(); // Show success even if linked delete fails
+                    this.loadTransactions();
+                  }
+                });
+              } else {
+                this.showDeleteSuccessMessage();
+                this.loadTransactions();
+              }
+            } else {
+              this.showDeleteSuccessMessage();
+              this.loadTransactions();
+            }
           },
           error: (err) => {
             console.error(err);
@@ -277,5 +402,54 @@ export class TransactionsListComponent implements OnInit {
         });
       }
     });
+  }
+
+  // Helper method to find the linked transfer transaction
+  private findLinkedTransferTransaction(transaction: any): any | null {
+    if (transaction.type !== 'transfer') return null;
+
+    // Look for a transaction with:
+    // - Same absolute amount (one negative, one positive)
+    // - Same date
+    // - Same description
+    // - Different account_id
+    return this.transactions.find(t =>
+      t.id !== transaction.id &&
+      t.type === 'transfer' &&
+      Math.abs(t.amount) === Math.abs(transaction.amount) &&
+      t.date === transaction.date &&
+      t.description === transaction.description &&
+      t.account_id !== transaction.account_id
+    ) || null;
+  }
+
+  private showDeleteSuccessMessage() {
+    Swal.fire({
+      title: this.translate.instant('COMMON.DELETE'),
+      text: this.translate.instant('TRANSACTIONS.DELETE_SUCCESS'),
+      icon: 'success',
+      timer: 2000,
+      showConfirmButton: false,
+      background: '#1e293b',
+      color: '#fff',
+      heightAuto: false
+    });
+  }
+
+  // Get the sign (+/-) to display for a transaction amount
+  getAmountSign(tx: any): string {
+    if (tx.type === 'transfer') {
+      // For transfers, check the notes to determine direction
+      if (tx.notes?.includes('Transfer to')) {
+        return '-'; // Outgoing transfer (money leaving)
+      } else if (tx.notes?.includes('Transfer from')) {
+        return '+'; // Incoming transfer (money arriving)
+      }
+      // Fallback for transfers without proper notes
+      return '-';
+    }
+
+    // For regular income/expense transactions
+    return tx.categories?.type === 'expense' ? '-' : '+';
   }
 }

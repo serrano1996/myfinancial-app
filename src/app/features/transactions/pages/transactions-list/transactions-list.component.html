@@ -98,10 +98,10 @@
 
                     <div class="tx-right">
                         <div class="amount-wrapper">
-                            <span class="amount" [class.income]="tx.categories?.type === 'income'"
-                                [class.expense]="tx.categories?.type === 'expense' || tx.categories?.type === 'transfer'">
-                                {{ tx.categories?.type === 'expense' || tx.categories?.type === 'transfer' ? '-' : '+'
-                                }}
+                            <span class="amount"
+                                [class.income]="tx.type === 'transfer' ? tx.notes?.includes('Transfer from') : tx.categories?.type === 'income'"
+                                [class.expense]="tx.type === 'transfer' ? tx.notes?.includes('Transfer to') : tx.categories?.type === 'expense'">
+                                {{ getAmountSign(tx) }}
                                 {{ tx.amount | currency:'EUR' }}
                             </span>
                         </div>

@@ -35,7 +35,7 @@ export class TransactionFormModalComponent implements OnChanges {
       type: ['expense'], // Default to expense
       account_id: ['', Validators.required],
       destination_account_id: [''], // For transfers
-      category_id: ['', Validators.required],
+      category_id: [''], // Optional - not required
       amount: [null, [Validators.required, Validators.min(0.01)]],
       date: [today, Validators.required],
       description: ['', Validators.required],
@@ -55,18 +55,17 @@ export class TransactionFormModalComponent implements OnChanges {
 
   updateValidation(type: string) {
     const destControl = this.form.get('destination_account_id');
-    const categoryControl = this.form.get('category_id');
 
+    // destination_account_id is optional even for transfers
+    // This allows editing old transfers that don't have destination_account_id
     if (type === 'transfer') {
-      destControl?.setValidators([Validators.required]);
-      categoryControl?.clearValidators();
+      // No validation required - field is optional
+      destControl?.clearValidators();
     } else {
       destControl?.clearValidators();
-      categoryControl?.setValidators([Validators.required]);
     }
 
     destControl?.updateValueAndValidity();
-    categoryControl?.updateValueAndValidity();
   }
 
   ngOnChanges(changes: SimpleChanges): void {

@@ -164,6 +164,7 @@ textarea {
 textarea {
     resize: vertical;
     min-height: 100px;
+    white-space: pre-wrap; /* Preserve line breaks and spaces */
 }
 
 select {
