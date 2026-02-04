@@ -57,6 +57,14 @@
                 <span class="nav-icon" title="{{ 'LAYOUT.SIDEBAR.DASHBOARD' | translate }}">📊</span>
                 <span *ngIf="!isCollapsed" class="nav-text">{{ 'LAYOUT.SIDEBAR.DASHBOARD' | translate }}</span>
             </a>
+            <a routerLink="/accounts" routerLinkActive="active" class="nav-item">
+                <span class="nav-icon" title="{{ 'LAYOUT.SIDEBAR.ACCOUNTS' | translate }}">💳</span>
+                <span *ngIf="!isCollapsed" class="nav-text">{{ 'LAYOUT.SIDEBAR.ACCOUNTS' | translate }}</span>
+            </a>
+            <a routerLink="/categories" routerLinkActive="active" class="nav-item">
+                <span class="nav-icon" title="{{ 'LAYOUT.SIDEBAR.CATEGORIES' | translate }}">🏷️</span>
+                <span *ngIf="!isCollapsed" class="nav-text">{{ 'LAYOUT.SIDEBAR.CATEGORIES' | translate }}</span>
+            </a>
             <a routerLink="/transactions" routerLinkActive="active" class="nav-item">
                 <span class="nav-icon" title="{{ 'LAYOUT.SIDEBAR.TRANSACTIONS' | translate }}">🧾</span>
                 <span *ngIf="!isCollapsed" class="nav-text">{{ 'LAYOUT.SIDEBAR.TRANSACTIONS' | translate }}</span>
