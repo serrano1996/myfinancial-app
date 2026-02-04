@@ -1,6 +1,6 @@
 -- Create custom types
 CREATE TYPE account_type AS ENUM ('cash', 'bank', 'credit', 'investment', 'other');
-CREATE TYPE category_type AS ENUM ('income', 'expense', 'transfer');
+CREATE TYPE category_type AS ENUM ('income', 'expense', 'transfer', 'savings');
 
 -- Create profiles table (extends auth.users)
 CREATE TABLE profiles (

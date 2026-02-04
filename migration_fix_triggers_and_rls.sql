@@ -1,4 +1,4 @@
--- Function to update account balance
+-- 1. Redefine the trigger function to handle soft deletes correctly
 CREATE OR REPLACE FUNCTION public.update_account_balance()
 RETURNS TRIGGER AS $$
 DECLARE
@@ -7,20 +7,18 @@ DECLARE
   v_account_id UUID;
   v_delta DECIMAL;
 BEGIN
-BEGIN
   -- Determine operation type and values
   IF (TG_OP = 'INSERT') THEN
     IF NEW.deleted_at IS NULL THEN
       v_account_id := NEW.account_id;
       v_amount := NEW.amount;
       
-      -- Get category type
       SELECT type INTO v_category_type FROM categories WHERE id = NEW.category_id;
       
       IF v_category_type = 'income' THEN
         v_delta := v_amount;
       ELSE
-        v_delta := -v_amount; -- Expense or Transfer
+        v_delta := -v_amount;
       END IF;
 
       UPDATE accounts SET balance = balance + v_delta WHERE id = v_account_id;
@@ -35,7 +33,7 @@ BEGIN
       SELECT type INTO v_category_type FROM categories WHERE id = OLD.category_id;
       
       IF v_category_type = 'income' THEN
-        v_delta := -v_amount; -- Reverse logic
+        v_delta := -v_amount;
       ELSE
         v_delta := v_amount;
       END IF;
@@ -82,7 +80,10 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
--- Trigger
-CREATE TRIGGER on_transaction_change
-  AFTER INSERT OR UPDATE OR DELETE ON transactions
-  FOR EACH ROW EXECUTE PROCEDURE public.update_account_balance();
+-- 2. Reinforce RLS Policies for Transactions
+DROP POLICY IF EXISTS "Users can update their own transactions" ON transactions;
+DROP POLICY IF EXISTS "Users can soft delete their own transactions" ON transactions;
+
+-- Create the unified update policy
+CREATE POLICY "Users can update their own transactions" ON transactions
+  FOR UPDATE USING (auth.uid() = user_id);
