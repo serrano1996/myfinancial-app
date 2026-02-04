@@ -53,9 +53,24 @@
     "DASHBOARD": {
         "TITLE": "Dashboard",
         "SUBTITLE": "Overview of your financial health",
-        "BALANCE": "Total Balance",
+        "BALANCE": "Monthly Balance",
         "INCOME": "Income",
         "EXPENSES": "Expenses",
+        "CURRENT_MONTH": "Current Month",
+        "MONTHS": {
+            "JANUARY": "January",
+            "FEBRUARY": "February",
+            "MARCH": "March",
+            "APRIL": "April",
+            "MAY": "May",
+            "JUNE": "June",
+            "JULY": "July",
+            "AUGUST": "August",
+            "SEPTEMBER": "September",
+            "OCTOBER": "October",
+            "NOVEMBER": "November",
+            "DECEMBER": "December"
+        },
         "CHARTS": {
             "EXPENSE_BY_CATEGORY": "Expenses by Category",
             "INCOME_VS_EXPENSE": "Income vs Expense"

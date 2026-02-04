@@ -53,9 +53,24 @@
     "DASHBOARD": {
         "TITLE": "Panel Principal",
         "SUBTITLE": "Resumen de tu salud financiera",
-        "BALANCE": "Balance Total",
+        "BALANCE": "Balance del Mes",
         "INCOME": "Ingresos",
         "EXPENSES": "Gastos",
+        "CURRENT_MONTH": "Mes Actual",
+        "MONTHS": {
+            "JANUARY": "Enero",
+            "FEBRUARY": "Febrero",
+            "MARCH": "Marzo",
+            "APRIL": "Abril",
+            "MAY": "Mayo",
+            "JUNE": "Junio",
+            "JULY": "Julio",
+            "AGOSTO": "Agosto",
+            "SEPTEMBER": "Septiembre",
+            "OCTOBER": "Octubre",
+            "NOVEMBER": "Noviembre",
+            "DECEMBER": "Diciembre"
+        },
         "CHARTS": {
             "EXPENSE_BY_CATEGORY": "Gastos por Categoría",
             "INCOME_VS_EXPENSE": "Ingresos vs Gastos"

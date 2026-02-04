@@ -22,6 +22,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
   user: User | null = null;
   loading = true;
 
+  // Month/Year Filter
+  selectedMonth: number;
+  selectedYear: number;
+  monthNames: string[] = [];
+
   // Metrics
   totalBalance = 0;
   totalIncome = 0;
@@ -69,7 +74,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private transactionsService: TransactionsService,
     private translate: TranslateService,
     private cdr: ChangeDetectorRef
-  ) { }
+  ) {
+    // Initialize with current month and year
+    const now = new Date();
+    this.selectedMonth = now.getMonth(); // 0-11
+    this.selectedYear = now.getFullYear();
+    this.updateMonthNames();
+  }
 
   ngOnInit() {
     this.userSubscription = this.authService.user$.subscribe(user => {
@@ -82,9 +93,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
       }
     });
 
-    // Translate chart labels on language change
+    // Translate chart labels and month names on language change
     this.translate.onLangChange.subscribe(() => {
       this.updateChartLabels();
+      this.updateMonthNames();
     });
   }
 
@@ -105,6 +117,64 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.barChartData = { ...this.barChartData };
   }
 
+  updateMonthNames() {
+    this.monthNames = [
+      this.translate.instant('DASHBOARD.MONTHS.JANUARY'),
+      this.translate.instant('DASHBOARD.MONTHS.FEBRUARY'),
+      this.translate.instant('DASHBOARD.MONTHS.MARCH'),
+      this.translate.instant('DASHBOARD.MONTHS.APRIL'),
+      this.translate.instant('DASHBOARD.MONTHS.MAY'),
+      this.translate.instant('DASHBOARD.MONTHS.JUNE'),
+      this.translate.instant('DASHBOARD.MONTHS.JULY'),
+      this.translate.instant('DASHBOARD.MONTHS.AUGUST'),
+      this.translate.instant('DASHBOARD.MONTHS.SEPTEMBER'),
+      this.translate.instant('DASHBOARD.MONTHS.OCTOBER'),
+      this.translate.instant('DASHBOARD.MONTHS.NOVEMBER'),
+      this.translate.instant('DASHBOARD.MONTHS.DECEMBER')
+    ];
+  }
+
+  getMonthDateRange(): { startDate: string; endDate: string } {
+    const startDate = new Date(this.selectedYear, this.selectedMonth, 1);
+    const endDate = new Date(this.selectedYear, this.selectedMonth + 1, 0, 23, 59, 59);
+    return {
+      startDate: startDate.toISOString().split('T')[0],
+      endDate: endDate.toISOString().split('T')[0]
+    };
+  }
+
+  previousMonth() {
+    if (this.selectedMonth === 0) {
+      this.selectedMonth = 11;
+      this.selectedYear--;
+    } else {
+      this.selectedMonth--;
+    }
+    this.loadDashboardData();
+  }
+
+  nextMonth() {
+    if (this.selectedMonth === 11) {
+      this.selectedMonth = 0;
+      this.selectedYear++;
+    } else {
+      this.selectedMonth++;
+    }
+    this.loadDashboardData();
+  }
+
+  goToCurrentMonth() {
+    const now = new Date();
+    this.selectedMonth = now.getMonth();
+    this.selectedYear = now.getFullYear();
+    this.loadDashboardData();
+  }
+
+  isCurrentMonth(): boolean {
+    const now = new Date();
+    return this.selectedMonth === now.getMonth() && this.selectedYear === now.getFullYear();
+  }
+
   loadDashboardData() {
     if (!this.user) return;
     this.loading = true;
@@ -113,9 +183,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.dataSubscription.unsubscribe();
     }
 
+    const dateRange = this.getMonthDateRange();
+
     this.dataSubscription = forkJoin({
       accounts: this.accountsService.getAccounts(this.user.id).pipe(catchError(() => of([]))),
-      transactions: this.transactionsService.getTransactions(this.user.id, 0, 100).pipe(catchError(() => of({ data: [], count: 0 })))
+      transactions: this.transactionsService.getTransactions(this.user.id, 0, 1000, {
+        startDate: dateRange.startDate,
+        endDate: dateRange.endDate
+      }).pipe(catchError(() => of({ data: [], count: 0 })))
     }).pipe(
       timeout(5000),
       catchError(err => {
@@ -127,9 +202,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.cdr.detectChanges();
       })
     ).subscribe(({ accounts, transactions }) => {
-      // Process Accounts
-      this.totalBalance = (accounts || []).reduce((sum: number, acc: any) => sum + (acc.balance || 0), 0);
-
       // Process Transactions
       const txs = transactions?.data || [];
       let income = 0;
@@ -152,6 +224,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
       this.totalIncome = income;
       this.totalExpense = expense;
+      // Calculate balance as income minus expense for the selected month
+      this.totalBalance = income - expense;
 
       // Update Charts
       this.barChartData = {

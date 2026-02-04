@@ -4,6 +4,39 @@
         <p class="subtitle">{{ 'DASHBOARD.SUBTITLE' | translate }}</p>
     </header>
 
+    <!-- Month/Year Selector -->
+    <div class="month-selector">
+        <div class="month-controls">
+            <button class="month-nav-btn" (click)="previousMonth()" [disabled]="loading">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+            </button>
+
+            <div class="month-display">
+                <span class="month-name">{{ monthNames[selectedMonth] }}</span>
+                <span class="year-name">{{ selectedYear }}</span>
+            </div>
+
+            <button class="month-nav-btn" (click)="nextMonth()" [disabled]="loading">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+            </button>
+        </div>
+
+        <button class="current-month-btn-icon" (click)="goToCurrentMonth()" [disabled]="loading || isCurrentMonth()"
+            [title]="'DASHBOARD.CURRENT_MONTH' | translate">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+        </button>
+    </div>
+
     <div *ngIf="loading" class="loading-state">
         <div class="spinner"></div>
     </div>
@@ -13,7 +46,8 @@
         <div class="dashboard-grid">
             <div class="card summary-card balance-card">
                 <h3>{{ 'DASHBOARD.BALANCE' | translate }}</h3>
-                <p class="amount">{{ totalBalance | currency:'EUR' }}</p>
+                <p class="amount" [ngClass]="{'success': totalBalance >= 0, 'danger': totalBalance < 0}">{{ totalBalance
+                    | currency:'EUR' }}</p>
             </div>
 
             <div class="card summary-card">
