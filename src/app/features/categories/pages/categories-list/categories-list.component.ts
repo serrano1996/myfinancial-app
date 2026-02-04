@@ -26,7 +26,8 @@ export class CategoriesListComponent implements OnInit {
   categories: Tables<'categories'>[] = [];
   groupedCategories: { [key: string]: CategoryNode[] } = {
     income: [],
-    expense: []
+    expense: [],
+    savings: []
   };
 
   loading = true;
@@ -80,7 +81,7 @@ export class CategoriesListComponent implements OnInit {
   }
 
   buildTree() {
-    this.groupedCategories = { income: [], expense: [] };
+    this.groupedCategories = { income: [], expense: [], savings: [] };
 
     // Helper to recursively finding children
     const getChildren = (parentId: string, allCats: Tables<'categories'>[], level: number): CategoryNode[] => {
@@ -94,7 +95,7 @@ export class CategoriesListComponent implements OnInit {
     };
 
     // Process roots per type
-    ['income', 'expense'].forEach(type => {
+    ['income', 'expense', 'savings'].forEach(type => {
       const typeCats = this.categories.filter(c => c.type === type);
       const roots = typeCats.filter(c => !c.parent_id);
       this.groupedCategories[type] = roots.map(root => ({

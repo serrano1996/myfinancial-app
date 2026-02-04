@@ -25,7 +25,8 @@ export class TransactionFormModalComponent implements OnChanges {
   filteredCategories: Tables<'categories'>[] = [];
   transactionTypes = [
     { value: 'expense', label: 'CATEGORIES.MODAL.TYPES.EXPENSE', icon: '📉' },
-    { value: 'income', label: 'CATEGORIES.MODAL.TYPES.INCOME', icon: '📈' }
+    { value: 'income', label: 'CATEGORIES.MODAL.TYPES.INCOME', icon: '📈' },
+    { value: 'savings', label: 'CATEGORIES.MODAL.TYPES.SAVINGS', icon: '💰' }
   ];
 
   constructor(private fb: FormBuilder) {
