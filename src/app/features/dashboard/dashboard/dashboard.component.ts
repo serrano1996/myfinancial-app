@@ -31,6 +31,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   totalBalance = 0;
   totalIncome = 0;
   totalExpense = 0;
+  totalSavings = 0;
 
   // Charts
   doughnutChartOptions: ChartConfiguration['options'] = {
@@ -206,6 +207,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       const txs = transactions?.data || [];
       let income = 0;
       let expense = 0;
+      let savings = 0;
       const categoryMap = new Map<string, number>();
 
       txs.forEach((tx: any) => {
@@ -219,11 +221,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
           expense += amount;
           const current = categoryMap.get(catName) || 0;
           categoryMap.set(catName, current + amount);
+        } else if (type === 'savings') {
+          savings += amount;
         }
       });
 
       this.totalIncome = income;
       this.totalExpense = expense;
+      this.totalSavings = savings;
       // Calculate balance as income minus expense for the selected month
       this.totalBalance = income - expense;
 

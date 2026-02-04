@@ -159,6 +159,10 @@
     color: var(--danger);
 }
 
+.amount.savings {
+    color: #3b82f6;
+}
+
 .charts-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));

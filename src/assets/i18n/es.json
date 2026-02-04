@@ -56,6 +56,8 @@
         "BALANCE": "Balance del Mes",
         "INCOME": "Ingresos",
         "EXPENSES": "Gastos",
+        "MONTHLY_SAVINGS": "Ahorro Mensual",
+        "SAVINGS_HISTORY": "Historial de Ahorros",
         "CURRENT_MONTH": "Mes Actual",
         "MONTHS": {
             "JANUARY": "Enero",

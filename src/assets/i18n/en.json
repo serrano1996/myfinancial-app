@@ -56,6 +56,8 @@
         "BALANCE": "Monthly Balance",
         "INCOME": "Income",
         "EXPENSES": "Expenses",
+        "MONTHLY_SAVINGS": "Monthly Savings",
+        "SAVINGS_HISTORY": "Savings History",
         "CURRENT_MONTH": "Current Month",
         "MONTHS": {
             "JANUARY": "January",

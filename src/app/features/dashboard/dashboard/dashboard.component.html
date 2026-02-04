@@ -59,6 +59,11 @@
                 <h3>{{ 'DASHBOARD.EXPENSES' | translate }}</h3>
                 <p class="amount danger">-{{ totalExpense | currency:'EUR' }}</p>
             </div>
+
+            <div class="card summary-card">
+                <h3>{{ 'DASHBOARD.MONTHLY_SAVINGS' | translate }}</h3>
+                <p class="amount savings">{{ totalSavings | currency:'EUR' }}</p>
+            </div>
         </div>
 
         <!-- Charts Section -->
