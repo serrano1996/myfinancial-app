@@ -121,7 +121,6 @@
         "DELETE_ERROR_TEXT": "No se pudo eliminar la categoría.",
         "INCOME": "Ingresos",
         "EXPENSE": "Gastos",
-        "TRANSFER": "Transferencias",
         "MODAL": {
             "EDIT_TITLE": "Editar Categoría",
             "NEW_TITLE": "Nueva Categoría",
@@ -136,8 +135,7 @@
             "ICON_LABEL": "Icono",
             "TYPES": {
                 "INCOME": "Ingreso",
-                "EXPENSE": "Gasto",
-                "TRANSFER": "Transferencia"
+                "EXPENSE": "Gasto"
             }
         }
     },

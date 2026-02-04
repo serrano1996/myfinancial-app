@@ -32,8 +32,7 @@ export class CategoryFormModalComponent implements OnChanges {
 
   categoryTypes = [
     { value: 'income', label: 'Income' },
-    { value: 'expense', label: 'Expense' },
-    { value: 'transfer', label: 'Transfer' }
+    { value: 'expense', label: 'Expense' }
   ];
 
   // Mutable colors array

@@ -16,7 +16,7 @@
 
     <div *ngIf="!loading" class="categories-content">
 
-        <ng-container *ngFor="let type of ['income', 'expense', 'transfer']">
+        <ng-container *ngFor="let type of ['income', 'expense']">
             <section class="category-section" *ngIf="groupedCategories[type] && groupedCategories[type].length > 0">
                 <h2 class="section-title">{{ ('CATEGORIES.MODAL.TYPES.' + (type | uppercase)) | translate }}</h2>
 

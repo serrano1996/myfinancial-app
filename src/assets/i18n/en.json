@@ -121,7 +121,6 @@
         "DELETE_ERROR_TEXT": "Could not delete category.",
         "INCOME": "Income",
         "EXPENSE": "Expense",
-        "TRANSFER": "Transfer",
         "MODAL": {
             "EDIT_TITLE": "Edit Category",
             "NEW_TITLE": "New Category",
@@ -136,8 +135,7 @@
             "ICON_LABEL": "Icon",
             "TYPES": {
                 "INCOME": "Income",
-                "EXPENSE": "Expense",
-                "TRANSFER": "Transfer"
+                "EXPENSE": "Expense"
             }
         }
     },

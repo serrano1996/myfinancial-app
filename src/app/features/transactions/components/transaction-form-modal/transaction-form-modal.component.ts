@@ -25,8 +25,7 @@ export class TransactionFormModalComponent implements OnChanges {
   filteredCategories: Tables<'categories'>[] = [];
   transactionTypes = [
     { value: 'expense', label: 'CATEGORIES.MODAL.TYPES.EXPENSE', icon: '📉' },
-    { value: 'income', label: 'CATEGORIES.MODAL.TYPES.INCOME', icon: '📈' },
-    { value: 'transfer', label: 'CATEGORIES.MODAL.TYPES.TRANSFER', icon: '↔️' }
+    { value: 'income', label: 'CATEGORIES.MODAL.TYPES.INCOME', icon: '📈' }
   ];
 
   constructor(private fb: FormBuilder) {
@@ -34,7 +33,6 @@ export class TransactionFormModalComponent implements OnChanges {
     this.form = this.fb.group({
       type: ['expense'], // Default to expense
       account_id: ['', Validators.required],
-      destination_account_id: [''], // For transfers
       category_id: [''], // Optional - not required
       amount: [null, [Validators.required, Validators.min(0.01)]],
       date: [today, Validators.required],
@@ -42,30 +40,6 @@ export class TransactionFormModalComponent implements OnChanges {
       notes: ['']
     });
 
-    // Watch for type changes to update validation
-    this.form.get('type')?.valueChanges.subscribe(type => {
-      this.updateValidation(type);
-    });
-  }
-
-  get filteredDestinationAccounts(): Tables<'accounts'>[] {
-    const sourceAccountId = this.form.get('account_id')?.value;
-    return this.accounts.filter(acc => acc.id !== sourceAccountId);
-  }
-
-  updateValidation(type: string) {
-    const destControl = this.form.get('destination_account_id');
-
-    // destination_account_id is optional even for transfers
-    // This allows editing old transfers that don't have destination_account_id
-    if (type === 'transfer') {
-      // No validation required - field is optional
-      destControl?.clearValidators();
-    } else {
-      destControl?.clearValidators();
-    }
-
-    destControl?.updateValueAndValidity();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -124,7 +98,6 @@ export class TransactionFormModalComponent implements OnChanges {
   setType(type: string) {
     this.form.patchValue({ type });
     this.filterCategories();
-    this.updateValidation(type);
   }
 
   onSubmit() {
