@@ -24,9 +24,8 @@
                 </div>
                 <div class="account-details">
                     <h3>{{ account.name }}</h3>
-                    <!-- We can translate account types if they are standard keys, otherwise use raw or a pipe map -->
-                    <!-- Assuming keys like 'cash', 'bank' match keys in translation file structure if uppercase -->
-                    <p class="account-type">{{ ('ACCOUNTS.MODAL.TYPES.' + (account.type | uppercase)) | translate }}</p>
+                    <p class="account-type">{{ account.type ? (('ACCOUNTS.MODAL.TYPES.' + (account.type | uppercase)) |
+                        translate) : '' }}</p>
                 </div>
                 <div class="account-balance">
                     <p class="amount">{{ account.balance | currency:'EUR' }}</p>

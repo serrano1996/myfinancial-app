@@ -89,24 +89,31 @@ CREATE TABLE transactions (
   user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
   account_id UUID REFERENCES accounts(id) NOT NULL,
   category_id UUID REFERENCES categories(id),
+  type category_type,
   amount DECIMAL(12, 2) NOT NULL,
   date DATE NOT NULL,
   description TEXT,
+  notes TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+  deleted_at TIMESTAMP WITH TIME ZONE
 );
 
 -- Enable RLS for transactions
 ALTER TABLE transactions ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "Users can view their own transactions" ON transactions
-  FOR SELECT USING (auth.uid() = user_id);
+  FOR SELECT USING (auth.uid() = user_id AND deleted_at IS NULL);
 
 CREATE POLICY "Users can insert their own transactions" ON transactions
   FOR INSERT WITH CHECK (auth.uid() = user_id);
 
 CREATE POLICY "Users can update their own transactions" ON transactions
-  FOR UPDATE USING (auth.uid() = user_id);
+  FOR UPDATE USING (auth.uid() = user_id AND deleted_at IS NULL);
+
+CREATE POLICY "Users can soft delete their own transactions" ON transactions
+  FOR UPDATE USING (auth.uid() = user_id)
+  WITH CHECK (deleted_at IS NOT NULL);
 
 CREATE POLICY "Users can delete their own transactions" ON transactions
   FOR DELETE USING (auth.uid() = user_id);

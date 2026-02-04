@@ -202,6 +202,7 @@
         "DELETE": "Eliminar",
         "EDIT": "Editar",
         "ADD": "Agregar",
+        "SELECT": "Seleccionar",
         "CONFIRM_DELETE": "¿Estás seguro de eliminar este elemento?",
         "EMPTY_STATE": "No se encontraron elementos.",
         "SEARCH_ICON": "Buscar icono...",

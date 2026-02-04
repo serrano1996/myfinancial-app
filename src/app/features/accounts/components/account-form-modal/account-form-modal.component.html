@@ -17,6 +17,7 @@
                 <div class="form-group">
                     <label>{{ 'ACCOUNTS.MODAL.TYPE_LABEL' | translate }}</label>
                     <select formControlName="type">
+                        <option value="">{{ 'COMMON.SELECT' | translate }}</option>
                         <option *ngFor="let type of accountTypes" [value]="type.value">
                             {{ ('ACCOUNTS.MODAL.TYPES.' + (type.value | uppercase)) | translate }}
                         </option>

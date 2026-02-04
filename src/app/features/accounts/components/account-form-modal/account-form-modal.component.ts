@@ -46,7 +46,7 @@ export class AccountFormModalComponent implements OnChanges {
   constructor(private fb: FormBuilder) {
     this.form = this.fb.group({
       name: ['', Validators.required],
-      type: ['cash', Validators.required],
+      type: ['cash'], // Optional - not required
       balance: [0],
       color: [this.colors[0]],
       icon: [this.allIcons[0]?.icon || '💰']
@@ -73,9 +73,16 @@ export class AccountFormModalComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['account'] && this.account) {
+      console.log('Account type from DB:', this.account.type); // Debug
+      console.log('Account data:', this.account); // Debug
+
+      // Ensure type is one of the valid values or empty
+      const validTypes = ['cash', 'bank', 'credit', 'investment', 'other'];
+      const accountType = validTypes.includes(this.account.type as string) ? this.account.type : '';
+
       this.form.patchValue({
         name: this.account.name,
-        type: this.account.type,
+        type: accountType,
         balance: this.account.balance,
         color: this.account.color,
         icon: this.account.icon

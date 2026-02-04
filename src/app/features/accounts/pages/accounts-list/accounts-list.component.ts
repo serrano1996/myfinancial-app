@@ -11,8 +11,9 @@ import Swal from 'sweetalert2';
 import { distinctUntilChanged, finalize, timeout } from 'rxjs';
 import { TransactionsService } from '../../../../core/services/transactions.service';
 
-interface AccountWithTransactions extends Tables<'accounts'> {
+interface AccountWithTransactions extends Omit<Tables<'accounts'>, 'balance'> {
   transactionCount?: number;
+  balance: number | null;
 }
 
 @Component({
@@ -64,14 +65,32 @@ export class AccountsListComponent implements OnInit {
       )
       .subscribe({
         next: (data) => {
-          this.accounts = data; // Assign base accounts data
+          this.accounts = data.map(acc => ({ ...acc, transactionCount: 0, balance: acc.balance })); // Assign base accounts data
 
-          // Fetch transaction count for each account
+          // Fetch transaction count and balance for each account
           this.accounts.forEach(acc => {
             if (!this.user) return; // Safety check
-            this.transactionsService.getTransactions(this.user.id, 0, 1, { accountId: acc.id })
+
+            // Get all transactions for this account to calculate balance
+            this.transactionsService.getTransactions(this.user.id, 0, 10000, { accountId: acc.id })
               .subscribe(res => {
                 acc.transactionCount = res.count;
+
+                // Calculate balance
+                acc.balance = res.data.reduce((sum, tx: any) => {
+                  // Use notes to determine if transfer is incoming or outgoing
+                  if (tx.type === 'transfer') {
+                    if (tx.notes?.includes('Transfer to')) {
+                      return sum - tx.amount; // Outgoing transfer
+                    } else {
+                      return sum + tx.amount; // Incoming transfer
+                    }
+                  }
+                  // For regular transactions: income adds, expense subtracts
+                  return tx.type === 'expense' ? sum - tx.amount : sum + tx.amount;
+                }, 0);
+
+                this.cdr.detectChanges();
               });
           });
         },

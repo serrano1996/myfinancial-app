@@ -202,6 +202,7 @@
         "DELETE": "Delete",
         "EDIT": "Edit",
         "ADD": "Add",
+        "SELECT": "Select",
         "CONFIRM_DELETE": "Are you sure you want to delete this item?",
         "EMPTY_STATE": "No items found."
     }
