@@ -71,6 +71,8 @@
     overflow: hidden;
     /* Hide text on collapse */
     white-space: nowrap;
+    text-decoration: none;
+    cursor: pointer;
 }
 
 .sidebar.collapsed .logo {
@@ -329,6 +331,8 @@
         display: flex;
         align-items: center;
         gap: 0.5rem;
+        text-decoration: none;
+        cursor: pointer;
     }
 
     .mobile-logo-icon {
