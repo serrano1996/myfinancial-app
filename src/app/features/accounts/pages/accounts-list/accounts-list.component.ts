@@ -67,29 +67,16 @@ export class AccountsListComponent implements OnInit {
         next: (data) => {
           this.accounts = data.map(acc => ({ ...acc, transactionCount: 0, balance: acc.balance })); // Assign base accounts data
 
-          // Fetch transaction count and balance for each account
+          // Fetch transaction count for each account (Balance is now MANUAL, not calculated)
           this.accounts.forEach(acc => {
-            if (!this.user) return; // Safety check
+            if (!this.user) return;
 
-            // Get all transactions for this account to calculate balance
-            this.transactionsService.getTransactions(this.user.id, 0, 10000, { accountId: acc.id })
+            // Get transactions count only (limit 1 for efficiency if possible, but service might fetch all)
+            // We keep this to show the count badge if it exists
+            this.transactionsService.getTransactions(this.user.id, 0, 1, { accountId: acc.id })
               .subscribe(res => {
                 acc.transactionCount = res.count;
-
-                // Calculate balance
-                acc.balance = res.data.reduce((sum, tx: any) => {
-                  // Use notes to determine if transfer is incoming or outgoing
-                  if (tx.type === 'transfer') {
-                    if (tx.notes?.includes('Transfer to')) {
-                      return sum - tx.amount; // Outgoing transfer
-                    } else {
-                      return sum + tx.amount; // Incoming transfer
-                    }
-                  }
-                  // For regular transactions: income adds, expense subtracts
-                  return tx.type === 'expense' ? sum - tx.amount : sum + tx.amount;
-                }, 0);
-
+                // REMOVED: Balance auto-calculation. Now relies on DB value.
                 this.cdr.detectChanges();
               });
           });
@@ -119,11 +106,13 @@ export class AccountsListComponent implements OnInit {
     if (!this.user) return;
     this.modalLoading = true;
 
+    // Use formData directly (including balance) - Balance is manually managed
     if (this.editingAccount) {
       // Update
       const updates: TablesUpdate<'accounts'> = {
         ...formData
       };
+
       this.accountsService.updateAccount(this.editingAccount.id, updates).subscribe({
         next: () => {
           this.loadAccounts();
@@ -141,6 +130,7 @@ export class AccountsListComponent implements OnInit {
         user_id: this.user.id,
         ...formData
       };
+
       this.accountsService.createAccount(newAccount).subscribe({
         next: () => {
           this.loadAccounts();
@@ -153,6 +143,12 @@ export class AccountsListComponent implements OnInit {
         }
       });
     }
+  }
+
+  finishSave() {
+    this.loadAccounts();
+    this.closeModal();
+    this.modalLoading = false;
   }
 
   deleteAccount(id: string, event: Event) {

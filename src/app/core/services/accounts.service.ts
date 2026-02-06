@@ -14,7 +14,7 @@ export class AccountsService {
     return from(
       this.supabaseService.supabase
         .from('accounts')
-        .select('id, name, icon, color')
+        .select('id, name, icon, color, type, balance')
         .eq('user_id', userId)
         .is('deleted_at', null)
         .order('name')
