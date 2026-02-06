@@ -1,16 +1,24 @@
 .page-container {
-    padding: 2rem;
-    max-width: 1200px;
+    max-width: 1100px;
     margin: 0 auto;
+    padding-bottom: 4rem;
+    animation: fadeIn 0.5s ease-out;
 }
 
 .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 2rem;
+    gap: 1.5rem;
+    flex-wrap: wrap;
 }
 
-.subtitle {
-    color: var(--text-secondary);
-    margin-top: 0.5rem;
+.page-header h1 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    line-height: 1.2;
 }
 
 .accounts-grid {
@@ -194,30 +202,60 @@
     }
 }
 
+/* Button Styles matching Transactions */
+.btn-primary {
+    background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+    /* Vibrant purple-pink gradient */
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 700;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
+    letter-spacing: 0.5px;
+    cursor: pointer;
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 8px 25px rgba(236, 72, 153, 0.5);
+    filter: brightness(1.1);
+}
+
 /* Mobile Improvements */
 @media (max-width: 768px) {
     .page-header {
         flex-direction: column;
-        align-items: stretch !important;
+        align-items: flex-start !important;
+        /* Left align */
         gap: 1.5rem;
         margin-bottom: 2rem;
     }
 
     .page-header>div {
-        text-align: center;
+        text-align: left;
+        /* Left align text */
     }
 
     .page-header h1 {
-        font-size: 1.75rem;
+        font-size: 2.2rem;
+        /* Match transaction title size */
     }
 
     .subtitle {
         margin-bottom: 0.5rem;
+        font-size: 0.95rem;
+        /* Match transaction subtitle size */
     }
 
-    .page-header .btn {
+    .page-header .btn-primary {
         width: 100%;
         justify-content: center;
-        padding: 1rem;
+        padding: 0.9rem 1.5rem;
+        margin-top: 0.5rem;
     }
 }
