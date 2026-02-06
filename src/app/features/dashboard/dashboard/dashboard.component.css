@@ -229,3 +229,9 @@
         font-size: 1.25rem;
     }
 }
+
+@media (max-width: 480px) {
+    .current-month-btn-icon {
+        display: none;
+    }
+}
