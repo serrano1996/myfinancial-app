@@ -14,6 +14,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { distinctUntilChanged, finalize, timeout } from 'rxjs';
 import Swal from 'sweetalert2';
 
+// Force rebuild of transactions component
 @Component({
   selector: 'app-transactions-list',
   standalone: true,
