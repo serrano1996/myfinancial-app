@@ -1,0 +1,207 @@
+<header class="page-header">
+    <div class="header-content">
+        <h1 class="text-3xl font-bold">
+            {{ 'STATISTICS.TITLE' | translate }}
+        </h1>
+        <p class="subtitle">{{ 'STATISTICS.SUBTITLE' | translate }}</p>
+    </div>
+    <div class="header-actions">
+        <button class="create-chart-btn" (click)="openWizard()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            {{ 'STATISTICS.WIZARD.TITLE' | translate }}
+        </button>
+    </div>
+</header>
+
+<!-- Wizard Modal -->
+<div class="modal-overlay" *ngIf="showModal">
+    <div class="modal-content wizard-modal">
+        <div class="modal-header">
+            <h2>{{ 'STATISTICS.WIZARD.TITLE' | translate }}</h2>
+            <button class="close-btn" (click)="closeWizard()">&times;</button>
+        </div>
+
+        <div class="modal-body">
+            <!-- Step 1: Data Type -->
+            <div class="wizard-step" *ngIf="currentStep === 1">
+                <h3>{{ 'STATISTICS.WIZARD.STEP_1' | translate }}</h3>
+                <p>{{ 'STATISTICS.WIZARD.DATA_TYPE.LABEL' | translate }}</p>
+                <div class="options-grid">
+                    <div class="option-card" [class.selected]="newChartConfig.dataType === 'income'"
+                        (click)="selectDataType('income')">
+                        <div class="icon income">↓</div>
+                        <span>{{ 'STATISTICS.WIZARD.DATA_TYPE.INCOME' | translate }}</span>
+                    </div>
+                    <div class="option-card" [class.selected]="newChartConfig.dataType === 'expense'"
+                        (click)="selectDataType('expense')">
+                        <div class="icon expense">↑</div>
+                        <span>{{ 'STATISTICS.WIZARD.DATA_TYPE.EXPENSE' | translate }}</span>
+                    </div>
+                    <div class="option-card" [class.selected]="newChartConfig.dataType === 'savings'"
+                        (click)="selectDataType('savings')">
+                        <div class="icon savings">$</div>
+                        <span>{{ 'STATISTICS.WIZARD.DATA_TYPE.SAVINGS' | translate }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2: Scope -->
+            <div class="wizard-step" *ngIf="currentStep === 2">
+                <h3>{{ 'STATISTICS.WIZARD.STEP_2' | translate }}</h3>
+                <p>{{ 'STATISTICS.WIZARD.SCOPE.LABEL' | translate }}</p>
+
+                <div class="scope-options">
+                    <div class="option-row" [class.selected]="newChartConfig.scope === 'all'"
+                        (click)="selectScope('all')">
+                        <span>{{ 'STATISTICS.WIZARD.SCOPE.ALL_ACCOUNTS' | translate }} / {{
+                            'STATISTICS.WIZARD.SCOPE.ALL_CATEGORIES' | translate }}</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>{{ 'STATISTICS.WIZARD.SCOPE.ACCOUNT_LABEL' | translate }}</label>
+                        <select class="form-control" (change)="selectScope('account', $any($event.target).value)"
+                            [value]="newChartConfig.scope === 'account' ? newChartConfig.selectedId : ''">
+                            <option value="" disabled selected>{{ 'COMMON.SELECT' | translate }}</option>
+                            <option *ngFor="let account of accounts" [value]="account.id">{{ account.name }}
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>{{ 'STATISTICS.WIZARD.SCOPE.CATEGORY_LABEL' | translate }}</label>
+                        <select class="form-control" (change)="selectScope('category', $any($event.target).value)"
+                            [value]="newChartConfig.scope === 'category' ? newChartConfig.selectedId : ''">
+                            <option value="" disabled selected>{{ 'COMMON.SELECT' | translate }}</option>
+                            <option *ngFor="let category of categories" [value]="category.id">{{ category.name }}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3: Grouping -->
+            <div class="wizard-step" *ngIf="currentStep === 3">
+                <h3>{{ 'STATISTICS.WIZARD.STEP_3' | translate }}</h3>
+                <p>{{ 'STATISTICS.WIZARD.GROUPING.LABEL' | translate }}</p>
+                <div class="options-grid">
+                    <div class="option-card" [class.selected]="newChartConfig.grouping === 'total'"
+                        (click)="selectGrouping('total')">
+                        <span>{{ 'STATISTICS.WIZARD.GROUPING.TOTAL' | translate }}</span>
+                    </div>
+                    <div class="option-card" [class.selected]="newChartConfig.grouping === 'month'"
+                        (click)="selectGrouping('month')">
+                        <span>{{ 'STATISTICS.WIZARD.GROUPING.MONTH' | translate }}</span>
+                    </div>
+                    <div class="option-card" [class.selected]="newChartConfig.grouping === 'year'"
+                        (click)="selectGrouping('year')">
+                        <span>{{ 'STATISTICS.WIZARD.GROUPING.YEAR' | translate }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 4: Chart Type -->
+            <div class="wizard-step" *ngIf="currentStep === 4">
+                <h3>{{ 'STATISTICS.WIZARD.STEP_4' | translate }}</h3>
+                <p>{{ 'STATISTICS.WIZARD.CHART_TYPE.LABEL' | translate }}</p>
+
+                <div class="options-grid small">
+                    <div class="option-card" [class.selected]="newChartConfig.type === 'bar'"
+                        (click)="selectChartType('bar')">
+                        <span>{{ 'STATISTICS.CHART_TYPES.BAR' | translate }}</span>
+                    </div>
+                    <div class="option-card" [class.selected]="newChartConfig.type === 'doughnut'"
+                        (click)="selectChartType('doughnut')">
+                        <span>{{ 'STATISTICS.CHART_TYPES.DOUGHNUT' | translate }}</span>
+                    </div>
+                    <div class="option-card" [class.selected]="newChartConfig.type === 'line'"
+                        (click)="selectChartType('line')">
+                        <span>{{ 'STATISTICS.CHART_TYPES.LINE' | translate }}</span>
+                    </div>
+                </div>
+
+                <div class="form-group mt-4">
+                    <label>{{ 'STATISTICS.WIZARD.CHART_TYPE.TITLE_LABEL' | translate }}</label>
+                    <input type="text" class="form-control" [(ngModel)]="newChartConfig.title"
+                        placeholder="{{ 'STATISTICS.WIZARD.CHART_TYPE.TITLE_PLACEHOLDER' | translate }}">
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button class="btn btn-secondary" *ngIf="currentStep > 1" (click)="prevStep()">
+                {{ 'STATISTICS.WIZARD.ACTIONS.BACK' | translate }}
+            </button>
+            <div class="spacer"></div>
+            <button class="btn btn-primary" *ngIf="currentStep < 4" (click)="nextStep()">
+                {{ 'STATISTICS.WIZARD.ACTIONS.NEXT' | translate }}
+            </button>
+            <button class="btn btn-primary success" *ngIf="currentStep === 4" (click)="saveWizardChart()"
+                [disabled]="!newChartConfig.title">
+                {{ 'STATISTICS.WIZARD.ACTIONS.FINISH' | translate }}
+            </button>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="loading" class="loading-state">
+    <div class="spinner"></div>
+</div>
+
+<div class="statistics-content" *ngIf="!loading">
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="customCharts.length === 0">
+        <div class="empty-icon-container">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="20" x2="18" y2="10"></line>
+                <line x1="12" y1="20" x2="12" y2="4"></line>
+                <line x1="6" y1="20" x2="6" y2="14"></line>
+            </svg>
+        </div>
+        <h3>{{ 'STATISTICS.EMPTY_STATE.TITLE' | translate }}</h3>
+        <p>{{ 'STATISTICS.EMPTY_STATE.DESCRIPTION' | translate }}</p>
+        <button class="btn btn-primary create-chart-btn" (click)="openWizard()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            {{ 'STATISTICS.WIZARD.TITLE' | translate }}
+        </button>
+    </div>
+
+    <!-- Custom Charts Section -->
+    <div class="custom-charts-section" *ngIf="customCharts.length > 0">
+        <h2 class="section-title">{{ 'STATISTICS.CUSTOM_CHARTS_TITLE' | translate }}</h2>
+        <div class="charts-grid">
+            <div class="card chart-card" *ngFor="let chart of customCharts">
+                <div class="chart-header">
+                    <h3>{{ chart.title }}</h3>
+                    <button class="btn-icon danger" (click)="deleteCustomChart(chart.id)"
+                        title="{{ 'COMMON.DELETE' | translate }}">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
+                            </path>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="chart-container" *ngIf="!chart.loading; else chartLoading">
+                    <canvas baseChart [data]="chart.data" [type]="chart.type" [options]="chart.options">
+                    </canvas>
+                </div>
+                <ng-template #chartLoading>
+                    <div class="chart-loading">
+                        <div class="spinner small"></div>
+                    </div>
+                </ng-template>
+            </div>
+        </div>
+    </div>
+</div>

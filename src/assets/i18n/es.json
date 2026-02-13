@@ -46,6 +46,7 @@
             "ACCOUNTS": "Cuentas",
             "CATEGORIES": "Categorías",
             "TRANSACTIONS": "Transacciones",
+            "STATISTICS": "Estadísticas",
             "PROFILE": "Perfil",
             "LOGOUT": "Cerrar Sesión"
         }
@@ -210,6 +211,70 @@
         "ERROR_CURRENT_PASSWORD": "La contraseña actual es incorrecta",
         "SUCCESS_AVATAR": "Foto de perfil actualizada",
         "LOADING": "Cargando perfil..."
+    },
+    "STATISTICS": {
+        "TITLE": "Estadísticas Globales",
+        "SUBTITLE": "Analiza tus finanzas con filtros avanzados",
+        "START_DATE": "Fecha Inicio",
+        "END_DATE": "Fecha Fin",
+        "ACCOUNT": "Cuenta",
+        "CATEGORY": "Categoría",
+        "ALL_ACCOUNTS": "Todas las cuentas",
+        "ALL_CATEGORIES": "Todas las categorías",
+        "APPLY": "Aplicar Filtros",
+        "SAVE_CHART": "Guardar como Gráfico Personalizado",
+        "CUSTOM_CHARTS_TITLE": "Gráficos Personalizados",
+        "METRICS": {
+            "TOTAL_BALANCE": "Balance Total",
+            "MONTHLY_INCOME": "Ingresos (Mes)",
+            "MONTHLY_EXPENSE": "Gastos (Mes)",
+            "SAVINGS_RATE": "Tasa de Ahorro"
+        },
+        "EMPTY_STATE": {
+            "TITLE": "Sin Gráficos Personalizados",
+            "DESCRIPTION": "Crea tu primer gráfico para visualizar tus finanzas a tu manera."
+        },
+        "WIZARD": {
+            "TITLE": "Crear Nuevo Gráfico",
+            "STEP_1": "1. Selección de Datos",
+            "STEP_2": "2. Filtros y Alcance",
+            "STEP_3": "3. Agrupación Temporal",
+            "STEP_4": "4. Visualización",
+            "DATA_TYPE": {
+                "LABEL": "¿Qué datos quieres ver?",
+                "INCOME": "Ingresos",
+                "EXPENSE": "Gastos",
+                "SAVINGS": "Ahorros"
+            },
+            "SCOPE": {
+                "LABEL": "Alcance de los datos",
+                "ACCOUNT_LABEL": "Cuenta (Opcional)",
+                "CATEGORY_LABEL": "Categoría (Opcional)",
+                "ALL_ACCOUNTS": "Todas las Cuentas",
+                "ALL_CATEGORIES": "Todas las Categorías"
+            },
+            "GROUPING": {
+                "LABEL": "¿Cómo agrupar los datos?",
+                "TOTAL": "Total (Suma Global)",
+                "MONTH": "Por Mes",
+                "YEAR": "Por Año"
+            },
+            "CHART_TYPE": {
+                "LABEL": "Elige el tipo de gráfico",
+                "TITLE_LABEL": "Título del Gráfico",
+                "TITLE_PLACEHOLDER": "Ej. Gastos Mensuales de Supermercado",
+                "TYPES": {
+                    "BAR": "Barras",
+                    "DOUGHNUT": "Dona",
+                    "LINE": "Línea"
+                }
+            },
+            "ACTIONS": {
+                "NEXT": "Siguiente",
+                "BACK": "Atrás",
+                "FINISH": "Crear Gráfico"
+            }
+        }
     },
     "COMMON": {
         "LOADING": "Cargando...",

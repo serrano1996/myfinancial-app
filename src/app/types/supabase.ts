@@ -99,6 +99,40 @@ export type Database = {
                     }
                 ]
             }
+            chart_configurations: {
+                Row: {
+                    config: Json
+                    created_at: string
+                    id: string
+                    title: string
+                    type: string
+                    user_id: string
+                }
+                Insert: {
+                    config: Json
+                    created_at?: string
+                    id?: string
+                    title: string
+                    type: string
+                    user_id: string
+                }
+                Update: {
+                    config?: Json
+                    created_at?: string
+                    id?: string
+                    title?: string
+                    type?: string
+                    user_id?: string
+                }
+                Relationships: [
+                    {
+                        foreignKeyName: "chart_configurations_user_id_fkey"
+                        columns: ["user_id"]
+                        referencedRelation: "users"
+                        referencedColumns: ["id"]
+                    }
+                ]
+            }
             profiles: {
                 Row: {
                     currency: string | null
@@ -134,6 +168,15 @@ export type Database = {
                 Row: {
                     account_id: string
                     amount: number
+                    categories?: {
+                        name: string
+                        type: string
+                        icon: string
+                        color: string
+                    } | null
+                    accounts?: {
+                        name: string
+                    } | null
                     category_id: string | null
                     created_at: string
                     date: string

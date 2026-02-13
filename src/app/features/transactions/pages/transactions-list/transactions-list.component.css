@@ -1,9 +1,63 @@
 /* Page Container */
 .page-container {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding-bottom: 4rem;
+    max-width: 100%;
+    /* Full width as requested */
+    margin: 0;
+    /* Remove centering */
+    padding: 0;
+    /* Remove extra padding, let main-content handle it or minimal internal padding */
     animation: fadeIn 0.5s ease-out;
+}
+
+/* ... existing code ... */
+
+.tx-date-badge .day {
+    font-size: 1.25rem;
+    /* Increased from 1.1rem */
+    font-weight: 700;
+    line-height: 1;
+}
+
+.tx-date-badge .month {
+    font-size: 0.8rem;
+    /* Increased from 0.75rem */
+    text-transform: uppercase;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+/* ... existing code ... */
+
+.tx-category {
+    font-size: 1.125rem;
+    /* Increased from 1rem */
+    font-weight: 600;
+    margin: 0;
+}
+
+.tx-account {
+    font-size: 0.9rem;
+    /* Increased from 0.8rem */
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.tx-desc {
+    font-size: 0.85rem;
+    /* Increased from 0.8rem */
+    color: rgba(255, 255, 255, 0.5);
+    font-style: italic;
+    margin-top: 2px;
+}
+
+/* ... existing code ... */
+
+.amount {
+    font-weight: 700;
+    font-size: 1.25rem;
+    /* Increased from 1.1rem */
 }
 
 /* Header Styles */
@@ -76,6 +130,7 @@
     /* Color matching shadow */
     letter-spacing: 0.5px;
     /* Improved readability */
+    font-size: 1rem;
 }
 
 .btn-primary:hover {
@@ -104,7 +159,8 @@
 .search-bar-container {
     display: flex;
     align-items: center;
-    padding: 1.5rem 2rem;
+    padding: 1.25rem 1.5rem;
+    /* Reduced vertical and horizontal padding */
     gap: 1rem;
     /* Keeps button close to input */
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
@@ -187,7 +243,8 @@
     display: flex;
     flex-wrap: wrap;
     gap: 1.5rem;
-    padding: 1.5rem 2rem;
+    padding: 1.25rem 1.5rem;
+    /* Reduced padding */
     background: rgba(15, 23, 42, 0.3);
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     animation: slideDown 0.3s ease-out;

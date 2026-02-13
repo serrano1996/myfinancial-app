@@ -17,13 +17,30 @@ export class TransactionsService {
     filters?: {
       accountId?: string;
       categoryId?: string;
+      categoryIds?: string[];
       startDate?: string;
       endDate?: string;
     }
   ): Observable<{ data: Tables<'transactions'>[], count: number }> {
     let query = this.supabaseService.supabase
       .from('transactions')
-      .select('id, date, amount, description, type, notes, category_id, account_id, accounts(name), categories(name, type, icon, color)', { count: 'exact' })
+      .select(`
+        id, 
+        date, 
+        amount, 
+        description, 
+        type, 
+        notes, 
+        category_id, 
+        account_id, 
+        accounts (name), 
+        categories (
+          name, 
+          type, 
+          icon, 
+          color
+        )
+      `, { count: 'exact' })
       .eq('user_id', userId)
       .is('deleted_at', null)
       .order('date', { ascending: false })
@@ -34,6 +51,9 @@ export class TransactionsService {
     }
     if (filters?.categoryId) {
       query = query.eq('category_id', filters.categoryId);
+    }
+    if (filters?.categoryIds && filters.categoryIds.length > 0) {
+      query = query.in('category_id', filters.categoryIds);
     }
     if (filters?.startDate) {
       query = query.gte('date', filters.startDate);

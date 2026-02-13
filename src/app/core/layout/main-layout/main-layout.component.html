@@ -69,6 +69,10 @@
                 <span class="nav-icon" title="{{ 'LAYOUT.SIDEBAR.TRANSACTIONS' | translate }}">🧾</span>
                 <span *ngIf="!isCollapsed" class="nav-text">{{ 'LAYOUT.SIDEBAR.TRANSACTIONS' | translate }}</span>
             </a>
+            <a routerLink="/statistics" routerLinkActive="active" class="nav-item">
+                <span class="nav-icon" title="{{ 'LAYOUT.SIDEBAR.STATISTICS' | translate }}">📈</span>
+                <span *ngIf="!isCollapsed" class="nav-text">{{ 'LAYOUT.SIDEBAR.STATISTICS' | translate }}</span>
+            </a>
             <a routerLink="/profile" routerLinkActive="active" class="nav-item">
                 <span class="nav-icon" title="{{ 'LAYOUT.SIDEBAR.PROFILE' | translate }}">👤</span>
                 <span *ngIf="!isCollapsed" class="nav-text">{{ 'LAYOUT.SIDEBAR.PROFILE' | translate }}</span>
