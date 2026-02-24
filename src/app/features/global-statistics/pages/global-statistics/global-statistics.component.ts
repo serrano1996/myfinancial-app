@@ -13,6 +13,7 @@ import { TransactionsService } from '../../../../core/services/transactions.serv
 import { AccountsService } from '../../../../core/services/accounts.service';
 import { CategoriesService } from '../../../../core/services/categories.service';
 import { ChartConfigurationService } from '../../../../core/services/chart-configuration.service';
+import { ProfileService } from '../../../../core/services/profile.service';
 import { Tables } from '../../../../types/supabase';
 
 Chart.register(...registerables);
@@ -78,6 +79,7 @@ export class GlobalStatisticsComponent implements OnInit, OnDestroy {
     private accountsService: AccountsService,
     private categoriesService: CategoriesService,
     private chartConfigService: ChartConfigurationService,
+    private profileService: ProfileService,
     private translate: TranslateService,
     private cdr: ChangeDetectorRef
   ) {
@@ -88,6 +90,8 @@ export class GlobalStatisticsComponent implements OnInit, OnDestroy {
     this.startDate = firstDay.toISOString().split('T')[0];
     this.endDate = lastDay.toISOString().split('T')[0];
   }
+
+  userCurrency = '€'; // Default currency
 
   ngOnInit() {
     this.subscriptions.add(this.authService.user$.subscribe(user => {
@@ -110,7 +114,8 @@ export class GlobalStatisticsComponent implements OnInit, OnDestroy {
 
     forkJoin({
       accounts: this.accountsService.getAccounts(this.user.id),
-      categories: this.categoriesService.getCategories(this.user.id)
+      categories: this.categoriesService.getCategories(this.user.id),
+      profile: this.profileService.getProfile(this.user.id)
     }).pipe(
       finalize(() => {
         this.loading = false;
@@ -122,9 +127,21 @@ export class GlobalStatisticsComponent implements OnInit, OnDestroy {
         console.log('Initial data receive:', data);
         this.accounts = data.accounts;
         this.categories = data.categories;
+        if (data.profile && data.profile.currency) {
+          this.userCurrency = this.getCurrencySymbol(data.profile.currency);
+        }
       },
       error: (err) => console.error('Error loading initial data', err)
     });
+  }
+
+  getCurrencySymbol(code: string): string {
+    switch (code) {
+      case 'EUR': return '€';
+      case 'USD': return '$';
+      case 'GBP': return '£';
+      default: return code;
+    }
   }
 
   // --- Wizard Logic ---
@@ -434,7 +451,15 @@ export class GlobalStatisticsComponent implements OnInit, OnDestroy {
       maintainAspectRatio: false,
       scales: {
         x: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.05)' } },
-        y: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.05)' } }
+        y: {
+          ticks: {
+            color: '#94a3b8',
+            callback: (value) => {
+              return value + ' ' + this.userCurrency;
+            }
+          },
+          grid: { color: 'rgba(255,255,255,0.05)' }
+        }
       },
       plugins: { legend: { display: false } }
     };

@@ -66,7 +66,8 @@
                         <select class="form-control" (change)="selectScope('account', $any($event.target).value)"
                             [value]="newChartConfig.scope === 'account' ? newChartConfig.selectedId : ''">
                             <option value="" disabled selected>{{ 'COMMON.SELECT' | translate }}</option>
-                            <option *ngFor="let account of accounts" [value]="account.id">{{ account.name }}
+                            <option *ngFor="let account of accounts" [value]="account.id">
+                                {{ account.icon }} {{ account.name }}
                             </option>
                         </select>
                     </div>
@@ -76,7 +77,8 @@
                         <select class="form-control" (change)="selectScope('category', $any($event.target).value)"
                             [value]="newChartConfig.scope === 'category' ? newChartConfig.selectedId : ''">
                             <option value="" disabled selected>{{ 'COMMON.SELECT' | translate }}</option>
-                            <option *ngFor="let category of categories" [value]="category.id">{{ category.name }}
+                            <option *ngFor="let category of categories" [value]="category.id">
+                                {{ category.icon }} {{ category.name }}
                             </option>
                         </select>
                     </div>
@@ -132,11 +134,14 @@
         </div>
 
         <div class="modal-footer">
-            <button class="btn btn-secondary" *ngIf="currentStep > 1" (click)="prevStep()">
+            <button class="btn btn-text" *ngIf="currentStep === 1" (click)="closeWizard()">
+                {{ 'COMMON.CANCEL' | translate }}
+            </button>
+            <button class="btn btn-text" *ngIf="currentStep > 1" (click)="prevStep()">
                 {{ 'STATISTICS.WIZARD.ACTIONS.BACK' | translate }}
             </button>
             <div class="spacer"></div>
-            <button class="btn btn-primary" *ngIf="currentStep < 4" (click)="nextStep()">
+            <button class="create-chart-btn" *ngIf="currentStep < 4" (click)="nextStep()">
                 {{ 'STATISTICS.WIZARD.ACTIONS.NEXT' | translate }}
             </button>
             <button class="btn btn-primary success" *ngIf="currentStep === 4" (click)="saveWizardChart()"
